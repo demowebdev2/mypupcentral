@@ -1,0 +1,63 @@
+# Cursor IDE
+.cursor/
+.cursorrules
+
+# CodeIgniter
+application/cache/*
+application/logs/*
+!application/cache/index.html
+!application/logs/index.html
+
+# System files
+system/cache/*
+system/logs/*
+!system/cache/index.html
+!system/logs/index.html
+
+# Uploads
+uploads/*
+!uploads/index.html
+
+# Captcha
+captcha/*.jpg
+
+# Temporary files
+*.tmp
+*.temp
+*.log
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Node modules (if any)
+node_modules/
+
+# Composer
+vendor/
+
+# Environment files
+.env
+.env.local
+.env.production
+
+# Database
+*.sqlite
+*.db
+
+# Backup files
+*.bak
+*.backup
+application/config/stripe.php
