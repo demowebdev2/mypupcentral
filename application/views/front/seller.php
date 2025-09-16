@@ -242,6 +242,9 @@
             <div class="col-md-7">
                 
                 	<h1 class="h3"> <?= $seller->name ?></h1>
+						<?php if (!empty($seller->business_name)) { ?>
+							<h4><b><i class="fas fa-building"></i> <?= $seller->business_name ?></b></h4>
+						<?php } ?>
 						<h4>Breeder Id: <?= $seller->id ?></h4>
 						<h4> <b><i class="fas fa-map-marker-alt"></i> <?= $seller->state ?></b></h4>
 
@@ -301,12 +304,12 @@
 </script>
         <div class="row">
             <div class="col-md-6">
-               <button class="btn btn-primary btn-lg w-100 mb-2"  onclick="toggleReviewList()">Read Seller Reviews</button>
+               <button class="btn btn-primary btn-lg w-100 mb-2"  onclick="toggleReviewList()">Read Breeder Reviews</button>
             
             </div>
             
             <div class="col-md-6">
-            <button class="btn w-100 btn-block btn-lg mb-2" style="background-color:#ffb553;color:#fff" onclick="toggleReviewForm()">Review This Seller</button>
+            <button class="btn w-100 btn-block btn-lg mb-2" style="background-color:#ffb553;color:#fff" onclick="toggleReviewForm()">Review This Breeder</button>
             </div>
             
         </div>
@@ -320,7 +323,7 @@
 									<div class="row">
 										<div class="col-sm-12">
 											<div class="rating-block">
-												<div class="text-center">	<h4>Seller Reviews</h4>
+												<div class="text-center">	<h4>Breeder Reviews</h4>
 											<h2 class="bold padding-bottom-7"><?= number_format((float)$avg_rating, 1, '.', ''); ?> <small>/ 5</small></h2>
 												<button type="button" class="btn <?php if ($avg_rating >= 1) {
 																						echo 'btn-warning btn-sm';
@@ -465,7 +468,7 @@
                           <div class="col-md-2"></div>
                           <div class="col-md-8">
                              
-                      	<div class="text-center"> <span class="d-block h3 mb-4"> Review Seller</span></div>
+                      	<div class="text-center"> <span class="d-block h3 mb-4"> Review Breeder</span></div>
 								
 									<form method="post" action="<?= base_url() ?>Ads/save_review/<?= $result->post_id ?>" id="review_form1" enctype="multipart/form-data">
 									<?php echo $this->customlib->getCSRF(); ?>
@@ -589,7 +592,7 @@
          <div class="row">
             <div class="col-md-12">
         <div class="text-center">
-			<h2 class="mb-4 mt-5" style="color: #8cc63f;    line-height: 36px;"><b> Puppies Available From This Seller</b></h2>
+			<h2 class="mb-4 mt-5" style="color: #8cc63f;    line-height: 36px;"><b> Puppies Available From This Breeder</b></h2>
 		</div>
 		
 		</div>

@@ -28,8 +28,17 @@ class Profile extends User_Controller
         $this->load->view('front/layout', $data);
     }
 
+    public function clear_messages()
+    {
+        $this->session->unset_userdata('msg');
+        redirect('profile');
+    }
+
     public function update_account()
     {
+        // Clear any existing flash messages
+        $this->session->unset_userdata('msg');
+        
         $this->form_validation->set_rules('name', 'Name', 'trim|xss_clean');
         $this->form_validation->set_rules('usda', 'USDA Number', 'trim|xss_clean');
 
@@ -49,6 +58,7 @@ class Profile extends User_Controller
             $this->common_model->update_records(
                 array('accept_marketing_offers' => $this->input->post('accept_marketing_offers'), 
                 'name' => $this->input->post('name'), 
+                'business_name' => $this->input->post('business_name'),
                  'address' => $this->input->post('address'),
                 'city' => $this->input->post('city'),
                  'state' => $state_name,

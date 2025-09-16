@@ -46,6 +46,10 @@ class My_ads extends User_Controller
         
             $action = '';
             $sub_array = array();
+            
+            // Add checkbox column for bulk actions
+            $sub_array[] = '<input type="checkbox" class="ad-checkbox" data-post-id="'.$row->post_id.'" data-status="'.$row->is_sold.'" data-days-left="'.$days.'" style="transform: scale(1.2);">';
+            
             if (!empty($row->featured_image)) {
                 $sub_array[] = '<img height="100px" width="100px" src="' . base_url() . 'uploads/puppies/' . $row->featured_image . '">';
             } else {
@@ -1424,6 +1428,143 @@ class My_ads extends User_Controller
 
 		redirect('/my-cart');
 	}
+
+    // Bulk Price Update
+    public function bulk_price_update()
+    {
+        if ($this->input->method() !== 'post') {
+            show_404();
+        }
+
+        $post_ids = $this->input->post('post_ids');
+        $new_price = $this->input->post('new_price');
+        $user_id = $_SESSION['siteuser']['id'];
+
+        if (empty($post_ids) || !is_array($post_ids) || empty($new_price)) {
+            $this->output
+                ->set_content_type('application/json')
+                ->set_output(json_encode(array('success' => false, 'message' => 'Invalid data provided')));
+            return;
+        }
+
+        $updated_count = 0;
+        foreach ($post_ids as $post_id) {
+            // Verify ownership
+            $ad = $this->common_model->list_row('posts', array('id' => $post_id, 'user_id' => $user_id));
+            if ($ad) {
+                $this->common_model->update_records(
+                    array('asking_price' => $new_price, 'updated_at' => date('Y-m-d H:i:s')),
+                    array('id' => $post_id),
+                    'posts'
+                );
+                $updated_count++;
+            }
+        }
+
+        if ($updated_count > 0) {
+            $this->output
+                ->set_content_type('application/json')
+                ->set_output(json_encode(array('success' => true, 'message' => "Price updated for {$updated_count} ad(s)")));
+        } else {
+            $this->output
+                ->set_content_type('application/json')
+                ->set_output(json_encode(array('success' => false, 'message' => 'No ads were updated')));
+        }
+    }
+
+    // Bulk Mark as Adopted
+    public function bulk_mark_adopted()
+    {
+        if ($this->input->method() !== 'post') {
+            show_404();
+        }
+
+        $post_ids = $this->input->post('post_ids');
+        $user_id = $_SESSION['siteuser']['id'];
+
+        if (empty($post_ids) || !is_array($post_ids)) {
+            $this->output
+                ->set_content_type('application/json')
+                ->set_output(json_encode(array('success' => false, 'message' => 'Invalid data provided')));
+            return;
+        }
+
+        $updated_count = 0;
+        foreach ($post_ids as $post_id) {
+            // Verify ownership
+            $ad = $this->common_model->list_row('posts', array('id' => $post_id, 'user_id' => $user_id));
+            if ($ad) {
+                $this->common_model->update_records(
+                    array('is_sold' => 1, 'updated_at' => date('Y-m-d H:i:s')),
+                    array('id' => $post_id),
+                    'posts'
+                );
+                $updated_count++;
+            }
+        }
+
+        if ($updated_count > 0) {
+            $this->output
+                ->set_content_type('application/json')
+                ->set_output(json_encode(array('success' => true, 'message' => "Marked {$updated_count} ad(s) as adopted")));
+        } else {
+            $this->output
+                ->set_content_type('application/json')
+                ->set_output(json_encode(array('success' => false, 'message' => 'No ads were updated')));
+        }
+    }
+
+    // Bulk Repost
+    public function bulk_repost()
+    {
+        if ($this->input->method() !== 'post') {
+            show_404();
+        }
+
+        $post_ids = $this->input->post('post_ids');
+        $user_id = $_SESSION['siteuser']['id'];
+
+        if (empty($post_ids) || !is_array($post_ids)) {
+            $this->output
+                ->set_content_type('application/json')
+                ->set_output(json_encode(array('success' => false, 'message' => 'Invalid data provided')));
+            return;
+        }
+
+        $reposted_count = 0;
+        foreach ($post_ids as $post_id) {
+            // Verify ownership and check if ad is expired (more than 45 days old)
+            $ad = $this->common_model->list_row('posts', array('id' => $post_id, 'user_id' => $user_id));
+            if ($ad) {
+                $date1 = date_create(date("Y-m-d H:i:s"));
+                $date2 = date_create($ad->createdate);
+                $diff = date_diff($date1, $date2);
+                $days = $diff->format("%a");
+
+                // Only repost if ad is expired (more than 45 days old)
+                if ($days > 45) {
+                    // Add to cart for reposting
+                    $cart_data = array(
+                        'user_id' => $user_id,
+                        'post_id' => $post_id,
+                        'created_at' => date('Y-m-d H:i:s')
+                    );
+                    $this->common_model->create_record($cart_data, 'cart');
+                    $reposted_count++;
+                }
+            }
+        }
+
+        if ($reposted_count > 0) {
+            $this->output
+                ->set_content_type('application/json')
+                ->set_output(json_encode(array('success' => true, 'message' => "Added {$reposted_count} expired ad(s) to cart for reposting")));
+        } else {
+            $this->output
+                ->set_content_type('application/json')
+                ->set_output(json_encode(array('success' => false, 'message' => 'No expired ads were found to repost')));
+        }
+    }
 	
 	
 }

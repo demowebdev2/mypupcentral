@@ -65,6 +65,8 @@ body, p{
 
 .navbar.navbar-site {
     position: absolute !important;
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
 }
 
 .navbar.navbar-site {
@@ -610,13 +612,33 @@ border-color: #8cc63f;
 color: #FFFFFF !important;
 }
 
-.sticky{
-position:fixed;
-width:100%;
-z-index:99999;
-background:#fff;
-transition:all 0.5s;
-top:0;
+.header_stickey.sticky,
+.tphdrsec.sticky{
+position:fixed !important;
+width:100% !important;
+z-index:99999 !important;
+background:#fff !important;
+top:0 !important;
+transform:translateZ(0) !important;
+-webkit-transform:translateZ(0) !important;
+will-change:transform;
+box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+/* When promotional banner is present for logged-in users */
+.promo-banner ~ .header_stickey.sticky,
+.promo-banner ~ .tphdrsec.sticky {
+    top: 64px !important;
+}
+
+/* Ensure main header appears below the fixed banner for logged-in users */
+.promo-banner ~ .header .navbar.fixed-top {
+    top: 64px !important;
+}
+
+/* Ensure main header content is positioned correctly when banner is present */
+.promo-banner ~ .header {
+    margin-top: 64px;
 }
 
 @media (min-width: 1200px) {
@@ -769,5 +791,100 @@ a.info-link {
   }
     .banner_img {
     height: 60vh !important;
+    }
+}
+
+/* Mobile scroll fixes */
+@media (max-width: 768px) {
+    body {
+        -webkit-overflow-scrolling: touch;
+        overflow-x: hidden;
+    }
+    
+    .header_stickey {
+        transform: translateZ(0);
+        -webkit-transform: translateZ(0);
+        backface-visibility: hidden;
+        -webkit-backface-visibility: hidden;
+    }
+    
+    .sticky {
+        /* Mobile sticky inherits from main .sticky rule */
+    }
+    
+    /* Prevent header jumping */
+    .tphdrsec {
+        position: relative;
+        z-index: 1000;
+    }
+    
+    
+    /* Smooth scrolling for mobile */
+    html {
+        scroll-behavior: smooth;
+        -webkit-overflow-scrolling: touch;
+    }
+}
+
+/* Promotional Banner Styles - Only for visitors (non-logged-in users) */
+.promo-banner {
+    position: relative;
+    top: 0;
+    width: 100%;
+    z-index: 1000;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 1.4;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    margin-bottom: 0;
+    height: 50px;
+    display: flex;
+    align-items: center;
+}
+
+/* Ensure content flows naturally for visitors */
+body {
+    padding-top: 0;
+}
+
+/* Adjust main content when banner is present for visitors */
+.promo-banner + #wrapper {
+    margin-top: 0;
+}
+
+/* Ensure header positioning accounts for banner */
+.header_stickey {
+    position: relative;
+}
+
+/* When banner is active for visitors, adjust header positioning */
+.promo-banner ~ .header_stickey {
+    margin-top: 0;
+}
+
+/* Ensure proper spacing for visitors with banner */
+.promo-banner ~ .header_stickey:not(.sticky) {
+    margin-top: 0;
+}
+
+.promo-banner p {
+    margin: 0;
+    padding: 8px 0;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+@media (max-width: 768px) {
+    .promo-banner p {
+        font-size: 13px;
+        padding: 6px 0;
+    }
+}
+
+@media (max-width: 480px) {
+    .promo-banner p {
+        font-size: 12px;
+        padding: 5px 0;
     }
 }

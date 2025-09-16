@@ -140,6 +140,10 @@ public function save()
 					'usage_times'=>$this->input->post('usage_times'),					
 					'created_at'=>date("Y-m-d H:i:s"),
 					'application' =>'pv',
+					'application_type'=>$this->input->post('application_type'),
+					'one_time_per_user'=>$this->input->post('one_time_per_user') ? 1 : 0,
+					'is_active'=>$this->input->post('is_active') ? 1 : 0,
+					'description'=>$this->input->post('description'),
 				);
 				
 			$insert_id = $this->common_model->create_record($data_insert,'promocode');

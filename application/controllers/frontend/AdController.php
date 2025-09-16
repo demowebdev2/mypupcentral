@@ -271,7 +271,7 @@ class AdController extends User_Controller
 
 
 
-				if (!empty(array_filter($_FILES['video_gallery']['name']))) {
+				if (isset($_FILES['video_gallery']) && !empty($_FILES['video_gallery']['name']) && !empty(array_filter($_FILES['video_gallery']['name']))) {
 					// var_dump($_FILES['video_gallery']['name']);
 					$name6 = array();
 					$output_dir6 = "uploads/puppies/";/* Path for file upload */
@@ -515,7 +515,7 @@ class AdController extends User_Controller
 
 
 
-		if (!empty(array_filter($_FILES['video_gallery']['name']))) {
+		if (isset($_FILES['video_gallery']) && !empty($_FILES['video_gallery']['name']) && !empty(array_filter($_FILES['video_gallery']['name']))) {
 			// var_dump($_FILES['video_gallery']['name']);
 			$name6 = array();
 			$output_dir6 = "uploads/puppies/";/* Path for file upload */
@@ -1764,7 +1764,7 @@ class AdController extends User_Controller
 			}
 
 
-			if (!empty(array_filter($_FILES['video_gallery']['name']))) {
+			if (isset($_FILES['video_gallery']) && !empty($_FILES['video_gallery']['name']) && !empty(array_filter($_FILES['video_gallery']['name']))) {
 				// var_dump($_FILES['video_gallery']['name']);
 				$name6 = array();
 				$output_dir6 = "uploads/puppies/";/* Path for file upload */
@@ -1961,7 +1961,7 @@ class AdController extends User_Controller
 		}
 
 
-		if (!empty(array_filter($_FILES['video_gallery']['name']))) {
+		if (isset($_FILES['video_gallery']) && !empty($_FILES['video_gallery']['name']) && !empty(array_filter($_FILES['video_gallery']['name']))) {
 			// var_dump($_FILES['video_gallery']['name']);
 			$name6 = array();
 			$output_dir6 = "uploads/puppies/";/* Path for file upload */
@@ -2223,20 +2223,24 @@ class AdController extends User_Controller
 		$url = base_url() . 'payment-success';
 		$total = 23;
 		$logged_user=$this->common_model->list_row('user_accounts',array('id'=>$_SESSION['siteuser']['id']));
-		$res2   = $this->common_model->list_row('promocode', array('promo_code' => $promo));
-		if ($res2 == '') {
-			$result = array('status' => 'fail', 'tot' => 'Invalid Promocode');
+		
+		// Use enhanced promo code validation
+		$validation = validate_promo_code($promo, $user_id, 'ad');
+		
+		if (!$validation['valid']) {
+			$result = array('status' => 'fail', 'tot' => $validation['message']);
 			echo json_encode($result);
+			return;
 		}
-		elseif(($res2->is_privilaged_only==1)&& ($logged_user->is_privilaged!=1) )
+		
+		$res2 = $validation['promo'];
+		
+		if(($res2->is_privilaged_only==1)&& ($logged_user->is_privilaged!=1) )
 		{
 			$result = array('status' => 'fail', 'tot' => 'Invalid Promocode');
 			echo json_encode($result);
 		}
 		else {
-
-			$res2   = $this->common_model->list_row('promocode', array('promo_code' => $promo));
-			
 			$id = $this->input->post('id');
 			$ad_id = $this->input->post('ad_id');
 			$pay_id = $this->input->post('pay_id');

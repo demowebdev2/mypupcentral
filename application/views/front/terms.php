@@ -8,17 +8,17 @@
     <div class="col-lg-12 col-md-12 col-sm-12 col-12  mt-2">
     <div class="text-center"><h2>Terms and Conditions of Service</h2></div>
     
-    <p style="text-align:justify">The terms, "Seller" and "Advertiser" refer to the person or company which places an ad on My Pups Central MyPupsCentral.com website. This person or company alone, and not MyPupsCentral.com, is responsible to fulfill any promises or representations contained in any website advertisement.
+    <p style="text-align:justify">The terms, "Breeder" and "Advertiser" refer to the person or company which places an ad on My Pups Central MyPupsCentral.com website. This person or company alone, and not MyPupsCentral.com, is responsible to fulfill any promises or representations contained in any website advertisement.
 </p>
     
-      <p style="text-align:justify">There are no situations whatsoever where MyPupsCentral.com is responsible or liable for any advertisement or part of any advertisement. MyPupsCentral.com serves only as a resource for sellers to display their products and services and for buyers to locate these products and services. MyPupsCentral.com does not own, contact, touch, sell, inventory, house, or transport any advertised puppy.
+      <p style="text-align:justify">There are no situations whatsoever where MyPupsCentral.com is responsible or liable for any advertisement or part of any advertisement. MyPupsCentral.com serves only as a resource for breeders to display their products and services and for buyers to locate these products and services. MyPupsCentral.com does not own, contact, touch, sell, inventory, house, or transport any advertised puppy.
 
 
 </p>
       
-        <p style="text-align:justify">Advertisers and Sellers are solely responsible for their own compliance with federal, state and local laws and MyPupsCentral.com does not monitor its advertisements for compliance nor is it permitted to provide legal advice.
+        <p style="text-align:justify">Advertisers and Breeders are solely responsible for their own compliance with federal, state and local laws and MyPupsCentral.com does not monitor its advertisements for compliance nor is it permitted to provide legal advice.
 </p>
- <p style="text-align:justify">MyPupsCentral.com is not liable for any damage, injury or claim resulting from a listing on its website by any of the many advertisers and sellers who offer services or products.
+ <p style="text-align:justify">MyPupsCentral.com is not liable for any damage, injury or claim resulting from a listing on its website by any of the many advertisers and breeders who offer services or products.
 
 </p>
  <div class="text-center"><h2>Privacy Policy</h2></div>
@@ -35,7 +35,7 @@
 
 </p>
 <div class="text-center"><h2>Shipping Policy</h2></div>
-<p style="text-align:justify">Unless purchased product is specifically presented as shippable, all products (This is not to be confused with the products/services advertised on MyPupsCentral.com, such as puppies, etc, which are shippable, but are purchased from the sellers buying advertising space on MyPupsCentral.com) offered on MyPupsCentral.com are advertising service only. MyPupsCentral.com only sells advertising space on our website. Since we cannot physically ship digital listings, all services rendered are done so via the Internet. 
+<p style="text-align:justify">Unless purchased product is specifically presented as shippable, all products (This is not to be confused with the products/services advertised on MyPupsCentral.com, such as puppies, etc, which are shippable, but are purchased from the breeders buying advertising space on MyPupsCentral.com) offered on MyPupsCentral.com are advertising service only. MyPupsCentral.com only sells advertising space on our website. Since we cannot physically ship digital listings, all services rendered are done so via the Internet. 
 
 
 </p>

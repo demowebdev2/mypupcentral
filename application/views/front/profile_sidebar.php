@@ -123,27 +123,6 @@
                             </div>
                             <!-- /.collapse-box  -->
 
-                            <div class="collapse-box">
-                                <h5 class="collapse-title">
-                                        Contact Person&nbsp;
-                                    <a href="#TerminateAccount" data-bs-toggle="collapse" class="float-end"><i class="fa fa-angle-down"></i></a>
-                                </h5>
-                                <div class="panel-collapse collapse show" id="TerminateAccount">
-                                    <ul class="acc-list">
-                                    <li>
-                                            <a class="<?php echo set_Topmenu('Contact_person_add'); ?>" href="<?= base_url()?>contact-person/add">
-                                            <i class="fas fa-plus"></i> Add
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a class="<?php echo set_Topmenu('Contact_person_list'); ?>" href="<?= base_url()?>contact-person">
-                                            <i class="fas fa-user-tie"></i> List
-                                            </a>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
-                            <!-- /.collapse-box  -->
 
                         </div>
                     </div>

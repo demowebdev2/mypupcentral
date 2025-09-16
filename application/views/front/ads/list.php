@@ -519,7 +519,7 @@ color:#8cc63f;
 				<div class="text-center">
 					<h2 class="pb-5"><b>Puppies Eligible for Training</b></h2>
 					<p>The puppies on this page are eligible to be placed in our training program.<br>
-Contact the seller to learn more a specific puppy. Once you have chosen
+Contact the breeder to learn more a specific puppy. Once you have chosen
 your new best friend;<br> visit our <a href="<?=base_url()?>training" class="color-white"><u><b>Training Page</b></u></a> & submit a <a href="<?=base_url()?>request_training" class="color-white"><u><b>Training Request</b></u></a> for
 your puppy.</p>
 				</div>
@@ -542,7 +542,19 @@ your puppy.</p>
 <div class="main-container" id="homepage">
 
 
-
+<div class="container">
+        <div class="row">
+            <div class="col-sm-12 ">
+                    <div class="page-header px-5">
+                    <div class="text-center">
+                    <h1 id="timeline"><b>Available Puppies</b></h1>
+                    <p>Welcome to My Pup Central! Explore our wonderful selection of adorable puppies who are ready to fill your life with love and joy. With over 10 years of experience, we’ve built lasting relationships with a strong community of breeders who hold themselves to the highest standards, ensuring every puppy receives the best care from the very beginning. With safe delivery options, your new best friend can come home to you through a smooth and seamless process. You’ll communicate directly with our breeders, who are always happy to answer your questions and guide you through the journey of bringing your puppy home.</p>
+                    <br><br>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <div class="container text-center mb-2">
 

@@ -194,8 +194,9 @@ class Home extends CI_Controller
             
 
 		$data['title'] = 'Breeder Application | MyPupCentral';
-		$this->form_validation->set_rules('name', 'Name', 'trim|required|xss_clean');
-		$this->form_validation->set_rules('phone', 'Phone', 'trim|required|xss_clean|is_unique[user_accounts.phone]', array('is_unique' => 'Phone number already exist.'));
+		$this->form_validation->set_rules('name', 'Breeder Name', 'trim|required|xss_clean');
+		$this->form_validation->set_rules('business_name', 'Business Name', 'trim|xss_clean');
+		$this->form_validation->set_rules('phone', 'Phone', 'trim|required|xss_clean|callback_validate_phone_format|is_unique[user_accounts.phone]', array('is_unique' => 'Phone number already exist.'));
 		$this->form_validation->set_rules('email', 'Email', 'trim|xss_clean|is_unique[user_accounts.email]', array('is_unique' => 'Email id already exist.'));
 		$this->form_validation->set_rules('password', 'Password', 'trim|required|xss_clean|min_length[6]');
 		$this->form_validation->set_rules('password_confirmation', 'Confirm Password', 'trim|required|xss_clean|matches[password]');
@@ -266,6 +267,7 @@ if($captcha_word != $_SESSION['captcha_word']){
 				'country_code' => 'US',
 				'password' => $this->enc_lib->passHashEnc($this->input->post('password')),
 				'name' => $this->input->post('name'),
+				'business_name' => $this->input->post('business_name'),
 				'phone' => $this->input->post('phone'),
 				'email' => $this->input->post('email'),
 				// 'usda'=>$this->input->post('usda'),
@@ -1110,6 +1112,28 @@ public function rm_old_assets()
      $desc='Assets Cleared. '.$cc.' Posts,('.$cc2.' Pictures,'.$cc3.' Videos)';
      $this->common_model->create_record(array('description'=>$desc,'created_at'=>date('Y-m-d H:i:s')),'cron_status');
        echo json_encode(array('status'=>success,'msg'=> $desc));
+}
+
+/**
+ * Custom validation function for phone number format
+ */
+public function validate_phone_format($phone) {
+    // Remove all non-digit characters for validation
+    $digits_only = preg_replace('/\D/', '', $phone);
+    
+    // Check if phone number has exactly 10 digits
+    if (strlen($digits_only) !== 10) {
+        $this->form_validation->set_message('validate_phone_format', 'Phone number must be exactly 10 digits.');
+        return FALSE;
+    }
+    
+    // Check if it's a valid US phone number format
+    if (!preg_match('/^\([0-9]{3}\) [0-9]{3}-[0-9]{4}$/', $phone)) {
+        $this->form_validation->set_message('validate_phone_format', 'Please enter phone number in format (888) 555-3333.');
+        return FALSE;
+    }
+    
+    return TRUE;
 }
 
 	

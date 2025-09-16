@@ -189,32 +189,32 @@
           </ul>
         </li>
 
-        <!--<li class="nav-item has-treeview <?php echo set_Menuopen('Promocodes'); ?>">-->
-        <!--  <a href="#" class="nav-link <?php echo set_Topmenu('Promocodes'); ?>">-->
-        <!--    <i class="nav-icon fas fa-ad"></i>-->
+        <li class="nav-item has-treeview <?php echo set_Menuopen('Promocodes'); ?>">
+          <a href="#" class="nav-link <?php echo set_Topmenu('Promocodes'); ?>">
+            <i class="nav-icon fas fa-tags"></i>
             
-        <!--    <p>-->
-        <!--    Promocodes-->
-        <!--      <i class="fas fa-angle-left right"></i>-->
-        <!--    </p>-->
-        <!--  </a>-->
-        <!--  <ul class="nav nav-treeview">-->
-        <!--    <li class="nav-item">-->
-        <!--        <a href="<?=base_url()?>admin/promocodes/add" class="nav-link <?php echo set_Submenu('Promocodes/add'); ?>">-->
-        <!--          <i class="fas fa-plus nav-icon"></i>-->
-        <!--          <p>Add New</p>-->
-        <!--        </a>-->
-        <!--      </li>-->
-          
-        <!--      <li class="nav-item">-->
-        <!--        <a href="<?=base_url()?>admin/promocodes" class="nav-link <?php echo set_Submenu('Promocodes/list'); ?>">-->
-        <!--          <i class="fas fa-list nav-icon"></i>-->
-        <!--          <p>List</p>-->
-        <!--        </a>-->
-        <!--      </li>-->
+            <p>
+            Promo Codes
+              <i class="fas fa-angle-left right"></i>
+            </p>
+          </a>
+          <ul class="nav nav-treeview">
+            <li class="nav-item">
+                <a href="<?=base_url()?>admin/promocodes/add" class="nav-link <?php echo set_Submenu('Promocodes/add'); ?>">
+                  <i class="fas fa-plus nav-icon"></i>
+                  <p>Add New</p>
+                </a>
+              </li>
+              
+              <li class="nav-item">
+                <a href="<?=base_url()?>admin/promocodes" class="nav-link <?php echo set_Submenu('Promocodes/list'); ?>">
+                  <i class="fas fa-list nav-icon"></i>
+                  <p>List All</p>
+                </a>
+              </li>
              
-        <!--</ul>-->
-        <!--</li>-->
+        </ul>
+        </li>
 
 
         <!--  <li class="nav-item has-treeview <?php echo set_Menuopen('Time Slots'); ?>">-->
@@ -325,6 +325,19 @@
             </p>
           </a>
         </li>
+        <li class="nav-header">Global Settings</li>
+        <li class="nav-item">
+          <a href="<?= base_url() ?>admin/promo_banner" class="nav-link <?php echo set_Topmenu('Promo_Banner'); ?>">
+            <i class="nav-icon fas fa-bullhorn"></i>
+            <p>Promotional Banner</p>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="<?= base_url() ?>admin/home_cover" class="nav-link <?php echo set_Topmenu('Home_Cover'); ?>">
+            <i class="nav-icon fas fa-image"></i>
+            <p>Home Cover</p>
+          </a>
+        </li>
         <li class="nav-header">Settings</li>
         <li class="nav-item has-treeview <?php echo set_Menuopen('Settings'); ?>">
           <a href="#" class="nav-link <?php echo set_Topmenu('Settings'); ?>">
@@ -349,7 +362,6 @@
                 <p>Google Tag</p>
               </a>
             </li>
-
 
           </ul>
         </li>

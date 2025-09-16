@@ -446,7 +446,7 @@
             <div class="col-md-3 order-lg-2 order-3">
               <h3 class="pt-5 incss-cut-clr2"><b>Step 2 </b> </h3>
               <p class="mt-2 mb-4 text-base leading-6 incss-float-right">
-                Once you've decided on a puppy contact the listed seller.
+                Once you've decided on a puppy contact the listed breeder.
               </p>
 
             </div>
@@ -454,7 +454,7 @@
               <div class="text-center">
                 <img class="w-48 h-full rounded-sm  why_chose_img2  mt-2 mb-2"
                   src="<?= base_url() ?>assets/lazyload.gif" data-src="<?= base_url(); ?>assets/Step2.jpg"
-                  alt="Trust-worthy Sellers- My Pup Central">
+                  alt="Trust-worthy Breeders- My Pup Central">
               </div>
             </div>
           </div>
@@ -472,7 +472,7 @@
             <div class="col-md-3">
               <h3 class="pt-5 incss-cut-clr2"><b>Step 3 </b></h3>
               <p class="mt-2 mb-4 text-base leading-6">
-                Arrange pickup at the seller or checkout our <a href="<?=base_url()?>shipping">Puppy Travel </a>Page to
+                Arrange pickup at the breeder or checkout our <a href="<?=base_url()?>shipping">Puppy Travel </a>Page to
                 review delivery options.
               </p>
 
@@ -495,7 +495,7 @@
               <div class="text-center">
                 <img class="w-48 h-full rounded-sm  why_chose_img4  mt-2 mb-2"
                   src="<?= base_url() ?>assets/lazyload.gif" data-src="<?= base_url(); ?>assets/Step4.jpg"
-                  alt="Trust-worthy Sellers- My Pup Central">
+                  alt="Trust-worthy Breeders- My Pup Central">
               </div>
             </div>
 

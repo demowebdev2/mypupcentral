@@ -227,7 +227,7 @@ text-align:left; font-size: 15px;
     <div class="container text-center mb-2 pt-5 pb-2">
         <h1 class="ship_title"><b>Getting Your Puppy Home </b></h1>
         <p class="ship_text pt-2">
-            Our goal is for a smooth transition between the seller’s home and yours for the puppy! Although picking up your puppy in person at the seller is ideal, we understand this is not always possible. If you are unable to pick up your puppy in person, we recommend coordinating travel with one of our approved transportation specialists and the seller.
+            Our goal is for a smooth transition between the breeder's home and yours for the puppy! Although picking up your puppy in person at the breeder is ideal, we understand this is not always possible. If you are unable to pick up your puppy in person, we recommend coordinating travel with one of our approved transportation specialists and the breeder.
         </p>
 
 
@@ -248,14 +248,14 @@ text-align:left; font-size: 15px;
                             <h2 class="info_sub">Air Transport</h2>
                             <ol class="text-left incss-cust-opt2-ol" >
                                 <li class="pt-2"><b>Contact</b></li>
-                                <li><i class="fa fa-circle" aria-hidden="true"></i> Contact your puppy’s seller with your information & nearest airports to get started</li>
-                                <li><i class="fa fa-circle" aria-hidden="true"></i> Your seller will request the booking from the transporter and provide you with a tentative arrival date</li>
+                                <li><i class="fa fa-circle" aria-hidden="true"></i> Contact your puppy's breeder with your information & nearest airports to get started</li>
+                                <li><i class="fa fa-circle" aria-hidden="true"></i> Your breeder will request the booking from the transporter and provide you with a tentative arrival date</li>
                                 <li class="pt-2"><b>Coordination</b></li>
                                 <li><i class="fa fa-circle" aria-hidden="true"></i>The transporter will find the best pet friendly flight option to the nearest available airport</li>
                                 <li><i class="fa fa-circle" aria-hidden="true"></i> They will provide you with a detailed flight itinerary</li>
-                                <li><i class="fa fa-circle" aria-hidden="true"></i> The transporter will coordinate with the seller to ensure your puppy is fully prepared for travel</li>
+                                <li><i class="fa fa-circle" aria-hidden="true"></i> The transporter will coordinate with the breeder to ensure your puppy is fully prepared for travel</li>
                                 <li class="pt-2"><b>Cuddles</b></li>
-                                <li><i class="fa fa-circle" aria-hidden="true"></i> Your puppy will be picked up at the seller and transported to the airport</li>
+                                <li><i class="fa fa-circle" aria-hidden="true"></i> Your puppy will be picked up at the breeder and transported to the airport</li>
                                 <li><i class="fa fa-circle" aria-hidden="true"></i> After check-in your puppy will travel in the comfort of a new airline-approved crate with absorbent bedding, food, and water</li>
                                 <li><i class="fa fa-circle" aria-hidden="true"></i> Finally you get to meet and cuddle your new family member at the airport!</li>
 
@@ -279,7 +279,7 @@ text-align:left; font-size: 15px;
                                 <li><i class="fa fa-circle" aria-hidden="true"></i> Contact your puppy’s seller with your information to get started</li>
                                 <li><i class="fa fa-circle" aria-hidden="true"></i> Your seller will request the booking from the transporter and provide you with a tentative delivery date</li>
                                 <li class="pt-2"><b>Coordination</b></li>
-                                <li><i class="fa fa-circle" aria-hidden="true"></i> The transporter will coordinate with the seller to ensure your puppy is fully prepared for travel</li>
+                                <li><i class="fa fa-circle" aria-hidden="true"></i> The transporter will coordinate with the breeder to ensure your puppy is fully prepared for travel</li>
                                 <li><i class="fa fa-circle" aria-hidden="true"></i> An estimated arrival time and meeting/delivery location will be provided by the transporter</li>
                                 <li class="pt-2"><b>Cuddles</b></li>
                                 <li><i class="fa fa-circle" aria-hidden="true"></i> Your puppy will be picked up at the seller and transported to you </li>

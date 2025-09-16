@@ -142,7 +142,7 @@ h2 {
         <div class="aligncontttt">
              <h3>Step 1</h3>
               <p>Choose your puppy from our eligible 
-                puppies & reach out to the seller to 
+                puppies & reach out to the breeder to 
                 learn more about them.
                 </p>
              <a href="<?=base_url()?>training-ads" class="btn">

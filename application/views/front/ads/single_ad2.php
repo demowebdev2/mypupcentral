@@ -1033,7 +1033,7 @@ data-fancybox="gallery" style="height: auto;">
 							</div>
 							
 							<div class="cell-content">
-								<h5 class="title">Seller Info : </h5>
+								<h5 class="title">Breeder Info : </h5>
 								<span class="name">
 									<a href="#">
 										<?= $contact_person->full_name ?>
@@ -1050,7 +1050,7 @@ data-fancybox="gallery" style="height: auto;">
 							
 							<div class="cell-content breeder-button">
 							    <button style="background:#3457D5" class="btn btn-primary header" id="breederinfo_button" data-toggle="collapse" data-target="#toggle-example">
-                                    View Seller Info
+                                    View Breeder Info
                                   </button>
 
 							</div>

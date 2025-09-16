@@ -116,7 +116,31 @@ $(document).ready(function () {
                     {
                        $('#payBtn').html('');
                        $('#payBtn').html('Pay $'+response.tot);
-                       $(".card-errors").html('<div class="alert alert-success"><p>Promocode Applied</p></div>');
+                       
+                       // Show detailed discount breakdown
+                       var originalPrice = parseFloat($('#tot').val());
+                       var finalPrice = parseFloat(response.tot);
+                       var discountAmount = originalPrice - finalPrice;
+                       
+                       var discountHtml = '<div class="alert alert-success">' +
+                           '<h6><i class="fas fa-check-circle"></i> Promocode Applied</h6>' +
+                           '<div class="row">' +
+                               '<div class="col-6"><strong>Original Price:</strong></div>' +
+                               '<div class="col-6 text-right">$' + originalPrice.toFixed(2) + '</div>' +
+                           '</div>' +
+                           '<div class="row">' +
+                               '<div class="col-6"><strong>Discount Applied:</strong></div>' +
+                               '<div class="col-6 text-right text-success">-$' + discountAmount.toFixed(2) + '</div>' +
+                           '</div>' +
+                           '<hr>' +
+                           '<div class="row">' +
+                               '<div class="col-6"><strong>Final Price:</strong></div>' +
+                               '<div class="col-6 text-right"><strong>$' + finalPrice.toFixed(2) + '</strong></div>' +
+                           '</div>' +
+                       '</div>';
+                       
+                       $(".card-errors").html(discountHtml);
+                       
                        if(response.tot < '1')
                        {
                             window.location.href = response.url;

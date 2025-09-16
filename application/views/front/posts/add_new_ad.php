@@ -473,19 +473,6 @@
                   <label for="available_date">Available Date<span style="color:red;">*</span></label>
                   <input type="text" name="available_date" class="form-control" id="available_date" placeholder="Enter Available Date" required>
                 </div>
-                <div class="form-group">
-                  <label for="nameCampaign">Contact Person <span style="color:red;">*</span></label>
-                  <select name="contact_person" id="contact_person" class="form-control custom-select" required>
-                    <option value="" selected="">Select Contact Person</option>
-                    <?php
-                    foreach ($contact as $contacts) {
-                    ?>
-                      <option value="<?= $contacts['id'] ?>"><?= $contacts['full_name'] ?></option>
-                    <?php
-                    }
-                    ?>
-                  </select>
-                </div>
                 <!-- <div class="form-group">
                         <label for="phone">Contact Number <span style="color:red;">*</span></label>
                         <input type="number" name="phone" class="form-control" id="phone"
@@ -999,7 +986,7 @@
 
 
     function validateOnSubmit() {
-      if ($('#ad_title').val() == '' || $('#contact_person').val() == '' || $('#phone').val() == '' || $('#available_date').val() == '' || $('#address').val() == '' || $('#puppy_dob').val() == '') {
+      if ($('#ad_title').val() == '' || $('#phone').val() == '' || $('#available_date').val() == '' || $('#address').val() == '' || $('#puppy_dob').val() == '') {
         swal('Please make sure that all the required fields are not empty!!');
         return false;
       } else if ($('input[name="puppy_sex"]:checked').length == 0) {
@@ -1097,7 +1084,7 @@
         // alert(current);
         $(document).scrollTop(0);
         if (current == '1') {
-          if ($('#ad_title').val() == '' || $('#contact_person').val() == '' || $('#phone').val() == '' || $('#available_date').val() == '' || $('#address').val() == '' || $('#puppy_dob').val() == '') {
+          if ($('#ad_title').val() == '' || $('#phone').val() == '' || $('#available_date').val() == '' || $('#address').val() == '' || $('#puppy_dob').val() == '') {
             swal('Please make sure that all the required fields are not empty!!');
           } else {
             currentGfgStep = $(this).parent();
@@ -2249,7 +2236,6 @@
 
         formData.append('puppy_category', $('#puppy_category').val());
         formData.append('description', $('#description').val());
-        formData.append('contact_person', $('#contact_person').val());
         formData.append('location', $('#location').val());
 
         formData.append("mother_photo", $('#mother_photo_value')[0].files[0]);

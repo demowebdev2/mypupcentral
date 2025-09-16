@@ -708,6 +708,22 @@ if($captcha_word != $_SESSION['captcha_word']){
 		$this->load->library('stripe_lib');
 		$data['title'] = 'Pay | MyPupCentral';
 
+		// Only run validation/processing on POST. For initial GET requests,
+		// just render the page without setting any flash messages.
+		if ($this->input->method() !== 'post') {
+			// Ensure any previous generic flash message doesn't leak to this page
+			$this->session->unset_userdata('msg');
+			$seo = $this->ads_model->getseo(18);
+			$data['title'] = $seo->meta_title;
+			$data['description'] = $seo->meta_description;
+			$data['keyword'] = $seo->meta_keywords;
+
+			$data['breeds'] = $this->common_model->list_records(array('is_puppyverify' => 1), 'breeds', 'breed_name', 'ASC');
+			$data['page'] = 'front/request_training';
+			$this->load->view('front/layout', $data);
+			return;
+		}
+
 		$this->form_validation->set_rules('first_name', 'First Name', 'required');
 		$this->form_validation->set_rules('last_name', 'Last Name', 'required');
 		$this->form_validation->set_rules('phone', 'Phone', 'required');
@@ -724,7 +740,12 @@ if($captcha_word != $_SESSION['captcha_word']){
 		$this->form_validation->set_rules('breeder_phone', 'Breeder Phone', 'required');
 	
 
+
 		if ($this->form_validation->run() == FALSE) {
+			// Log validation errors for debugging
+			log_message('debug', 'Form validation failed: ' . validation_errors());
+			// Do NOT set a global flash message here to avoid showing on unrelated pages
+			$this->session->unset_userdata('msg');
 
 			$seo = $this->ads_model->getseo(18);
 		$data['title'] = $seo->meta_title;
@@ -736,6 +757,8 @@ if($captcha_word != $_SESSION['captcha_word']){
 		$this->load->view('front/layout', $data);
 
 		} else {
+			// Log successful form submission
+			log_message('debug', 'Form validation passed, processing training request');
 			// If payment form is submitted with token
 		
 
@@ -830,6 +853,12 @@ if($captcha_word != $_SESSION['captcha_word']){
 
 					// If payment successful
 					if ($paymentID) {
+						// Record promo code usage if a promo code was used
+						if (!empty($code) && $discount > 0) {
+							$user_id = isset($_SESSION['siteuser']['id']) ? $_SESSION['siteuser']['id'] : 0;
+							record_promo_usage($code, $user_id, 'TRAINING_' . $ins_id, $discount, 'training');
+						}
+						
 						$msg='<table>';
 						$msg.='<tr><td>First Name</td><td>'.$insdata['first_name'].'</td></tr>';
 						$msg.='<tr><td>Last Name</td><td>'.$insdata['last_name'].'</td></tr>';
@@ -951,6 +980,8 @@ if($captcha_word != $_SESSION['captcha_word']){
 	{
 		$code=$this->input->post('code');
 		$plan=$this->input->post('plan');
+		$user_id = isset($_SESSION['siteuser']['id']) ? $_SESSION['siteuser']['id'] : 0;
+		
 		$price=0;
 		if($plan==0)
 		{
@@ -960,45 +991,41 @@ if($captcha_word != $_SESSION['captcha_word']){
 		{
 			$price=2500;
 		}
+		
 		if(!empty($code))
 		{
-			$res=$this->common_model->list_row('training_promocode',array('code'=>$code));
-
-			if(!empty($res))
+			// Use the enhanced promo code validation
+			$validation = validate_promo_code($code, $user_id, 'training');
+			
+			if($validation['valid'])
 			{
-				if($res->type==1)
-				{
-					$dis=($res->value*$price)/100;
-					$total=$price-$dis;
-				}
-
-				if($res->type==2)
-				{
-					$dis=$res->value;
-					$total=$price-$res->value;
-				}
-
-				$data=array('status'=>'success','msg'=>'Promocode Applied.',"dis"=>$dis,'total'=>$total);
-
+				$promo = $validation['promo'];
+				$discount = calculate_discount($code, $price);
+				$total = $price - $discount;
+				
+				$data=array(
+					'status'=>'success',
+					'msg'=>'Promocode Applied.',
+					'dis'=>$discount,
+					'total'=>$total,
+					'promo_id'=>$promo->id
+				);
 			}
 			else{
-				$data=array('status'=>'error','msg'=>'Invalid Code');
+				$data=array('status'=>'error','msg'=>$validation['message']);
 			}
-
 		}
 		else{
-			$data=array('status'=>'error','msg'=>'Invalid');
+			$data=array('status'=>'error','msg'=>'Please enter a promo code');
 		}
 
-		
-			echo json_encode($data);
-		
-	
+		echo json_encode($data);
 	}
 
 	
 	private function check_promocode2($code,$plan)
 	{
+		$user_id = isset($_SESSION['siteuser']['id']) ? $_SESSION['siteuser']['id'] : 0;
 		
 		$price=0;
 		if($plan==0)
@@ -1009,40 +1036,35 @@ if($captcha_word != $_SESSION['captcha_word']){
 		{
 			$price=2500;
 		}
+		
 		if(!empty($code))
 		{
-			$res=$this->common_model->list_row('training_promocode',array('code'=>$code));
-
-			if(!empty($res))
+			// Use the enhanced promo code validation
+			$validation = validate_promo_code($code, $user_id, 'training');
+			
+			if($validation['valid'])
 			{
-				if($res->type==1)
-				{
-					$dis=($res->value*$price)/100;
-					$total=$price-$dis;
-				}
-
-				if($res->type==2)
-				{
-					$dis=$res->value;
-					$total=$price-$res->value;
-				}
-
-				$data=array('status'=>'success','msg'=>'Promocode Applied.',"dis"=>$dis,'total'=>$total);
-
+				$promo = $validation['promo'];
+				$discount = calculate_discount($code, $price);
+				$total = $price - $discount;
+				
+				$data=array(
+					'status'=>'success',
+					'msg'=>'Promocode Applied.',
+					'dis'=>$discount,
+					'total'=>$total,
+					'promo_id'=>$promo->id
+				);
 			}
 			else{
-				$data=array('status'=>'error','msg'=>'Invalid Code');
+				$data=array('status'=>'error','msg'=>$validation['message']);
 			}
-
 		}
 		else{
-			$data=array('status'=>'error','msg'=>'Invalid');
+			$data=array('status'=>'error','msg'=>'Please enter a promo code');
 		}
 
-		
-			return $data;
-		
-	
+		return $data;
 	}
 
     

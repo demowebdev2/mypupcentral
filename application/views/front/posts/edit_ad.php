@@ -446,20 +446,6 @@
                             </div> 
                         </div>
                     </div> -->
-                <div class="form-group">
-                  <label for="nameCampaign">Contact Person <span style="color:red;">*</span></label>
-                  <select name="contact_person" id="contact_person" class="form-control custom-select">
-                    <option value="">Select Contact</option>
-                    <?php
-                    foreach ($contact as $contacts) {
-                      $selected = $post->contact_name ==  $contacts['id'] ? 'selected' : '';
-                    ?>
-                      <option value="<?= $contacts['id'] ?>" <?php echo $selected; ?>><?= $contacts['full_name'] ?></option>
-                    <?php
-                    }
-                    ?>
-                  </select>
-                </div>
               <?php if(!empty($breeder->state_id)){ ?>
                       <?php foreach ($states as $row) { ?>
                         <?php if ($row->ID == $breeder->state_id) { ?>
@@ -987,7 +973,7 @@
         // alert(current);
         $(document).scrollTop(0);
         if (current == '1') {
-          if ($('#ad_title').val() == '' || $('#contact_person').val() == '' || $('#phone').val() == '' || $('#available_date').val() == '' || $('#address').val() == '' || $('#puppy_dob').val() == '') {
+          if ($('#ad_title').val() == '' || $('#phone').val() == '' || $('#available_date').val() == '' || $('#address').val() == '' || $('#puppy_dob').val() == '') {
             swal('Please make sure that all the required fields are not empty!!');
           } else {
             currentGfgStep = $(this).parent();
@@ -1940,7 +1926,6 @@ tinyMCE.triggerSave();
 
         formData.append('puppy_category', $('#puppy_category').val());
         formData.append('description', $('#description').val());
-        formData.append('contact_person', $('#contact_person').val());
         formData.append('location', $('#location').val());
 
         formData.append("mother_photo", $('#mother_photo_value')[0].files[0]);

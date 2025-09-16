@@ -477,7 +477,7 @@ function load_captcha()
 			<span class="font-weight-medium font-size-18 d-block">&nbsp;&nbsp;&nbsp;<?= $result->breed_name ?></span>
 		</div>
 		<div class="col-md-5 mt-2">
-			 <a href="#" class="btn btn-block btn-lg cntct contact_modal mb-2" style="background-color:#ffb553;color:#fff" title="Contact Us">Contact Seller</a>
+			 <a href="#" class="btn btn-block btn-lg cntct contact_modal mb-2" style="background-color:#ffb553;color:#fff" title="Contact Us">Contact Breeder</a>
 			<!--<a href="#reviews_div" class="btn btn-block btn-lg btn-light-blue cntct" title="Contact Us">Reviews</a>-->
 			
 
@@ -487,7 +487,7 @@ function load_captcha()
 						<div class="modal-content">
 							
 								<div class="modal-header">
-									<h3 class="modal-title" id="exampleModalLongTitle">Contact Seller</h3>
+									<h3 class="modal-title" id="exampleModalLongTitle">Contact Breeder</h3>
 									<button type="button" class="close contact_modal_close" data-dismiss="modal" aria-label="Close">
 										<span aria-hidden="true">&times;</span>
 									</button>
@@ -619,7 +619,7 @@ function load_captcha()
 					</li>
 					<li class="nav-item" role="presentation">
 						<button class="nav-link" id="family-tab" onclick="location.href='<?=base_url()?>seller/<?= $seller->slug ?>'">
-							<h4>Seller Information</h4>
+							<h4>Breeder Information</h4>
 						</button>
 					</li>
 				</ul>
@@ -800,7 +800,7 @@ function load_captcha()
 									<div class="row">
 										<div class="col-sm-12">
 											<div class="rating-block">
-												<div class="text-center">	<h4>Seller Reviews</h4>
+												<div class="text-center">	<h4>Breeder Reviews</h4>
 											<h2 class="bold padding-bottom-7"><?= number_format((float)$avg_rating, 1, '.', ''); ?> <small>/ 5</small></h2>
 												<button type="button" class="btn <?php if ($avg_rating >= 1) {
 																						echo 'btn-warning btn-sm';
@@ -933,7 +933,7 @@ function load_captcha()
 									</div>
 								<?php } ?>
 								
-								<div class="text-center"> <span class="d-block h3 mb-4"> Review Seller</span></div>
+								<div class="text-center"> <span class="d-block h3 mb-4"> Review Breeder</span></div>
 								
 									<form method="post" action="<?= base_url() ?>Ads/save_review/<?= $result->post_id ?>" id="review_form1" enctype="multipart/form-data">
 									<?php echo $this->customlib->getCSRF(); ?>
@@ -1317,7 +1317,7 @@ function load_captcha()
 <section class="mt-3 mb-5">
 	<div class="container">
 		<div class="text-center">
-			<h2 class="mb-4 mt-2" style="color: #8cc63f;    line-height: 36px;"><b>Other Puppies Available From This Seller</b></h2>
+			<h2 class="mb-4 mt-2" style="color: #8cc63f;    line-height: 36px;"><b>Other Puppies Available From This Breeder</b></h2>
 		</div>
 
 		<div class="col-xl-12">

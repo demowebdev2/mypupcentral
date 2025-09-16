@@ -282,7 +282,29 @@
                     }
                     else
                     {
-                         $('.price').append('<h4><b>Total :$ ' + response.msg + ' </b></h4>');
+                        // Show discount breakdown if offer amount is available
+                        if(response.offer && response.offer > 0) {
+                            var originalTotal = parseFloat(response.msg) + parseFloat(response.offer);
+                            var discountHtml = '<div class="alert alert-success">' +
+                                '<h6><i class="fas fa-check-circle"></i> Promo Code Applied Successfully!</h6>' +
+                                '<div class="row">' +
+                                    '<div class="col-6"><strong>Original Price:</strong></div>' +
+                                    '<div class="col-6 text-right">$' + originalTotal.toFixed(2) + '</div>' +
+                                '</div>' +
+                                '<div class="row">' +
+                                    '<div class="col-6"><strong>Discount Applied:</strong></div>' +
+                                    '<div class="col-6 text-right text-success">-$' + parseFloat(response.offer).toFixed(2) + '</div>' +
+                                '</div>' +
+                                '<hr>' +
+                                '<div class="row">' +
+                                    '<div class="col-6"><strong>Final Price:</strong></div>' +
+                                    '<div class="col-6 text-right"><strong>$' + parseFloat(response.msg).toFixed(2) + '</strong></div>' +
+                                '</div>' +
+                            '</div>';
+                            $('.price').append(discountHtml);
+                        } else {
+                            $('.price').append('<h4><b>Total :$ ' + response.msg + ' </b></h4>');
+                        }
                     }
                    
                 }

@@ -35,11 +35,14 @@
 
   $(document).ready(function() {
      
-    $("#paymentFrm").submit(function() {
+    $("#paymentFrm").submit(function(e) {
          var dd=$("#restrict").val();
+         console.log('Form submit triggered, restrict value:', dd);
+         
     // On form submit
     if(dd==0)
     {
+      console.log('Processing paid order with Stripe');
       // Disable the submit button to prevent repeated clicks
       $('#payBtn').attr("disabled", "disabled");
 
@@ -54,6 +57,18 @@
       // Submit from callback
       return false;
       
+    }
+    else if(dd==1)
+    {
+      console.log('Processing free order, allowing form submission');
+      // For free orders (promo code applied), allow form submission
+      $('#payBtn').attr("disabled", "disabled");
+      return true;
+    }
+    else
+    {
+      console.log('Unknown restrict value:', dd, 'allowing default submission');
+      return true;
     }
     });
     
@@ -273,10 +288,10 @@
                 </ol>
 
                 <h3 class="mt-3"><u>DEPOSIT</u></h3>
-                <p>Before your puppy moves from the seller to the trainer you will be required to:</p>
+                <p>Before your puppy moves from the breeder to the trainer you will be required to:</p>
 
                 <ol>
-                  <li>Pay the seller in full for the price of your puppy. This payment is non-refundable after the puppy
+                  <li>Pay the breeder in full for the price of your puppy. This payment is non-refundable after the puppy
                     has gone into training.</li>
                   <li>Pay My Pup Central in full for the training package you select. This payment is non-refundable.</li>
                 </ol>
@@ -348,7 +363,7 @@
 
 
                 <div class="text-center">
-                  <h2 class="total_box"><b>TOTAL: $1500.00 </b></h2>
+                  <h2 class="total_box" id="total_display"><b>TOTAL: $1500.00 </b></h2>
                 </div>
 
 
@@ -549,9 +564,35 @@
 
             if (response.status == 'success') {
               $(".code_error").empty();
-              $(".code_error").append('<div class="text-center"><p class="text-success"><b>' + response.msg + '</b></p></div>');
+              
+              // Show discount breakdown
+              var originalPrice = (plan == 0) ? 1500.00 : 2500.00;
+              var discountAmount = response.dis || 0;
+              var finalPrice = response.total || originalPrice;
+              
+              var discountHtml = '<div class="alert alert-success">' +
+                '<h6><i class="fas fa-check-circle"></i> ' + response.msg + '</h6>' +
+                '<div class="row">' +
+                  '<div class="col-6"><strong>Original Price:</strong></div>' +
+                  '<div class="col-6 text-right">$' + originalPrice.toFixed(2) + '</div>' +
+                '</div>' +
+                '<div class="row">' +
+                  '<div class="col-6"><strong>Discount Applied:</strong></div>' +
+                  '<div class="col-6 text-right text-success">-$' + discountAmount.toFixed(2) + '</div>' +
+                '</div>' +
+                '<hr>' +
+                '<div class="row">' +
+                  '<div class="col-6"><strong>Final Price:</strong></div>' +
+                  '<div class="col-6 text-right"><strong>$' + finalPrice.toFixed(2) + '</strong></div>' +
+                '</div>' +
+              '</div>';
+              
+              $(".code_error").append(discountHtml);
               $("#payBtn").empty();
-              $("#payBtn").append('SUBMIT REQUEST & PAY $' + response.total);
+              $("#payBtn").append('SUBMIT REQUEST & PAY $' + finalPrice.toFixed(2));
+              
+              // Update the total display
+              $("#total_display").html('<b>TOTAL: $' + finalPrice.toFixed(2) + '</b>');
               
               if(response.total==0)
               {
@@ -576,6 +617,9 @@
 
               $(".code_error").empty();
               $(".code_error").append('<div class="text-center"><p class="text-danger"><b>' + response.msg + '</b></p></div>');
+              
+              // Reset total display to original price
+              $("#total_display").html('<b>TOTAL: $' + price.toFixed(2) + '</b>');
             }
 
           }

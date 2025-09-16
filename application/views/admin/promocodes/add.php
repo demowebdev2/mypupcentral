@@ -132,9 +132,47 @@
                        <input type="number" name="usage_times"  required="" class="form-control" placeholder="Usage Times">                       
                       </div>
                     </div>
+                    <div class="col-md-6">
+                      <label for="state">Application Type</label>
+                      <div class="input-group mb-3">
+                        <select class="form-control" name="application_type" required="">
+                          <option value="training">Training Only</option>
+                          <option value="ad">Ad Posting Only</option>
+                          <option value="both">Both Training & Ads</option>
+                        </select>
+                      </div>
+                    </div>
                     </div>  
                  
-                
+                 <div class="row">
+                    <div class="col-md-6">
+                      <label for="state">One Time Per User</label>
+                      <div class="input-group mb-3">
+                        <select class="form-control" name="one_time_per_user">
+                          <option value="0">No - Multiple uses allowed</option>
+                          <option value="1">Yes - One time only per user</option>
+                        </select>
+                      </div>
+                    </div>
+                    <div class="col-md-6">
+                      <label for="state">Status</label>
+                      <div class="input-group mb-3">
+                        <select class="form-control" name="is_active">
+                          <option value="1">Active</option>
+                          <option value="0">Inactive</option>
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="row">
+                    <div class="col-md-12">
+                      <label for="state">Description</label>
+                      <div class="input-group mb-3">
+                        <textarea name="description" class="form-control" rows="3" placeholder="Enter description for this promo code (optional)"></textarea>
+                      </div>
+                    </div>
+                  </div>
 
                     </div>
                     <!-- /.card-body -->

@@ -666,8 +666,8 @@
 
 	<!--<div class="p-0 mt-lg-4 mt-md-3 mt-3"></div>-->
 	<div class="container-fluid banner_container_fluid p-0">
-		<img src="<?= base_url() ?>assets/lazyload.gif" class="banner_img d-lg-none" data-src="<?=base_url()?>assets/banner99.jpg">
-		<img src="<?= base_url() ?>assets/lazyload.gif" class="banner_img d-lg-block d-none" data-src="<?=base_url()?>assets/banner99.jpg">
+		<img src="<?= base_url() ?>assets/lazyload.gif" class="banner_img d-lg-none" data-src="<?= (strpos(get_home_cover_image(), 'home_cover_') === 0) ? base_url('uploads/' . get_home_cover_image()) : base_url('assets/' . get_home_cover_image()) ?>">
+		<img src="<?= base_url() ?>assets/lazyload.gif" class="banner_img d-lg-block d-none" data-src="<?= (strpos(get_home_cover_image(), 'home_cover_') === 0) ? base_url('uploads/' . get_home_cover_image()) : base_url('assets/' . get_home_cover_image()) ?>">
 		<!-- <video class="thevideo banner_video" playsinline muted loop style=" pointer-events: none;">
 			<source src="<?= base_url() ?>uploads/indexvideo.mp4 " type="video/mp4">
 			Your browser does not support the video tag.
@@ -738,7 +738,7 @@
 							            </a>
 							        </span>
 							        <span>
-							            <a href="https://www.facebook.com/mypupcentral/" target="_blank">
+							            <a href="https://www.facebook.com/people/My-Pup-Central/61579137068671/ " target="_blank">
 							                <svg width="50px" height="50px" viewBox="0 0 48 48" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
     
                                             <title>Facebook-color</title>
@@ -769,7 +769,7 @@
 				<div class="text-center">
 					<h2 class="pb-5"><b>We make it easy to find the perfect puppy!</b></h2>
 					<p>Finding your new best friend to share your adventures with is an exciting process; think of all
-						the fun you’ll have together! However, choosing a seller you can trust and navigating the
+						the fun you'll have together! However, choosing a breeder you can trust and navigating the
 						transition process can be time-consuming and stressful. But don’t worry, we’ve done all the
 						screening for you to make your experience easy and enjoyable. </p>
 				</div>
@@ -852,9 +852,9 @@
 
 				<div class="col-md-2"></div>
 				<div class="col-md-5 d-none d-lg-block">
-					<h3 class="pt-5 incss-float-right"><b>Trust-worthy Sellers </b> </h3>
+					<h3 class="pt-5 incss-float-right"><b>Trust-worthy Breeders </b> </h3>
 					<p class="mt-2 mb-4 text-base leading-6 incss-float-right">
-						All of our sellers are vetted by our own team of experts and are required to meet our standards.
+						All of our breeders are vetted by our own team of experts and are required to meet our standards.
 					</p>
 					<a href="<?= base_url() ?>standard">
 						<button type="button" class="btn learn-mode-btn incss-float-right">Read Our
@@ -865,14 +865,14 @@
 					<div class="text-center">
 						<img class="w-48 h-full rounded-sm  why_chose_img2  mt-2 mb-2"
 							data-src="<?= base_url() ?>assets/why_2.jpg" src="<?= base_url() ?>assets/lazyload.gif"
-							alt="Trust-worthy Sellers- My Pup Central">
+							alt="Trust-worthy Breeders- My Pup Central">
 					</div>
 				</div>
 
 				<div class="col-md-5 d-lg-none">
-					<h3 class="pt-5"><b>Trust-worthy Sellers </b> </h3>
+					<h3 class="pt-5"><b>Trust-worthy Breeders </b> </h3>
 					<p class="mt-2 mb-4 text-base leading-6">
-						All of our sellers are vetted by our own team of experts and are required to meet our standards.
+						All of our breeders are vetted by our own team of experts and are required to meet our standards.
 					</p>
 					<a href="<?= base_url() ?>standard">
 						<button type="button" class="btn learn-mode-btn incss-float-right">Read Our
@@ -922,7 +922,7 @@ before your puppy comes home to you!
 					<div class="text-center">
 						<img class="w-48 h-full rounded-sm  why_chose_img2  mt-2 mb-2"
 							data-src="<?= base_url() ?>assets/why_4.jpg" src="<?= base_url() ?>assets/lazyload.gif"
-							alt="Trust-worthy Sellers- My Pup Central">
+							alt="Trust-worthy Breeders- My Pup Central">
 					</div>
 				</div>
 
@@ -1393,8 +1393,8 @@ before your puppy comes home to you!
 										not raise or sell puppies. Website Logo, Web Layout, and all pictures and text
 										are copyright 2021 by My Pup Central, LLC with all rights reserved. All
 										information is believed to be accurate but is not guaranteed by My Pup Central
-										®. Please verify all information with the seller. <br><br>We provide advertising
-										for dog breeders, puppy sellers, and other pet lovers offering dogs and puppies
+										®. Please verify all information with the breeder. <br><br>We provide advertising
+										for dog breeders, puppy breeders, and other pet lovers offering dogs and puppies
 										for sale. We also advertise other puppy-related products and services.</div>
 								</div>
 							</div>
@@ -1439,7 +1439,7 @@ before your puppy comes home to you!
 
 	var typed = new Typed(".u-text-animation.u-text-animation--typing", {
 // 		strings: ["It\'s back to school season.", "Find your study buddy."],
-		strings: ["Matching hearts and puppies...", "Because everyone deserves the pure joy of a puppy."],
+		strings: ["<?= get_home_cover_text_1() ?>", "<?= get_home_cover_text_2() ?>"],
 		typeSpeed: 60,
 		loop: true,
 		showCursor: true,

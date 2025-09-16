@@ -10,7 +10,7 @@
 
     <meta name="csrf-token" content="H7OFH3Hg8Ao2SicKwdGSMXE5PINRZcVBI2waPFl2">
     <!--<meta name="viewport" content="width=device-width, initial-scale=1.0">-->
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
     <meta name="apple-mobile-web-app-title" content="My Pup Central">
 
     <?php if ($this->uri->segment(1) == 'ad') { ?>
@@ -43,7 +43,8 @@
 
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.0.3/css/font-awesome.css" integrity="sha512-xnwMSDv7Nv5JmXb48gKD5ExVOnXAbNpBWVAXTo9BJWRJRygG8nwQI81o5bYe8myc9kiEF/qhMGPjkSsF06hyHA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    
     <link href="<?= base_url(); ?>assets/front/plugins/bxslider/jquery.bxslider.css" rel="stylesheet" />
 
 
@@ -156,12 +157,34 @@
 
     <script>
         $(document).ready(function() {
-            $(window).scroll(function() {
+            var lastScrollTop = 0;
+            var ticking = false;
+            
+            function updateStickyHeader() {
                 var scroll = $(window).scrollTop();
-                if (scroll >= 250) {
-                    $('.header_stickey').addClass('sticky');
-                } else {
-                    $('.header_stickey').removeClass('sticky');
+                var $header = $('.header_stickey');
+                
+                if ($header.length > 0) {
+                    if (scroll >= 100) {
+                        $header.addClass('sticky');
+                        // console.log('Header made sticky at scroll:', scroll);
+                    } else {
+                        $header.removeClass('sticky');
+                        // console.log('Header unstuck at scroll:', scroll);
+                    }
+                }
+                
+                lastScrollTop = scroll;
+                ticking = false;
+            }
+            
+            // Initial check
+            updateStickyHeader();
+            
+            $(window).scroll(function() {
+                if (!ticking) {
+                    requestAnimationFrame(updateStickyHeader);
+                    ticking = true;
                 }
             });
         });
@@ -170,6 +193,24 @@
     <script type="text/javascript" src="//widget.trustpilot.com/bootstrap/v5/tp.widget.bootstrap.min.js" async></script>
     <!-- End TrustBox script -->
 
+    <!-- Meta Pixel Code -->
+    <script>
+    !function(f,b,e,v,n,t,s)
+    {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+    n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+    if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+    n.queue=[];t=b.createElement(e);t.async=!0;
+    t.src=v;s=b.getElementsByTagName(e)[0];
+    s.parentNode.insertBefore(t,s)}(window, document,'script',
+    'https://connect.facebook.net/en_US/fbevents.js');
+    fbq('init', '1106066128385949');
+    fbq('track', 'PageView');
+    </script>
+    <noscript><img height="1" width="1" style="display:none"
+    src="https://www.facebook.com/tr?id=1106066128385949&ev=PageView&noscript=1"
+    /></noscript>
+    <!-- End Meta Pixel Code -->
+
 </head>
 
 <body class="skin-default">
@@ -177,14 +218,12 @@
     <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-K9HJ69R" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <!-- End Google Tag Manager (noscript) -->
 
+    <!-- Promotional Banner -->
+    <?= get_promo_banner() ?>
+
     <div class="loader"></div>
 
     <div id="wrapper">
-
-
-
-
-
         <!--App       -->
         <div class="new-search-div new-search-div-app app-content" style="display:none; z-index:999">
             <div class="topsearch-nav mt-1" style="display:none">

@@ -132,13 +132,18 @@
                                         <?php echo $this->customlib->getCSRF(); ?>
 
                                         <div class="row mb-3 required">
-                                            <label class="col-md-3 col-form-label">Name <sup>*</sup></label>
+                                            <label class="col-md-3 col-form-label">Breeder Name <sup>*</sup></label>
                                             <div class="col-md-9">
                                                 <input name="name" type="text" class="form-control" placeholder="" value="<?= $user->name ?>">
                                             </div>
                                         </div>
 
-                                      
+                                        <div class="row mb-3">
+                                            <label class="col-md-3 col-form-label">Business Name</label>
+                                            <div class="col-md-9">
+                                                <input name="business_name" type="text" class="form-control" placeholder="Enter Business Name (Optional)" value="<?= $user->business_name ?>">
+                                            </div>
+                                        </div>
 
                                         <div class="row mb-3 required">
                                             <label class="col-md-3 col-form-label">Email
@@ -334,7 +339,7 @@
                                         <input type="hidden" value="<?= $user->name ?>" name="name">
 
                                         <div class="row mb-3 required">
-                                            <label class="col-md-3 col-form-label"> Seller Description</label>
+                                            <label class="col-md-3 col-form-label"> Breeder Description</label>
                                             <div class="col-md-9">
                                                 <textarea class="form-control" rows="10" id="description" name="description"><?= $user->description ?></textarea>
 
