@@ -28,7 +28,7 @@ class Promocodes extends Admin_Controller {
 	}
 		public function fetch_promocodes()
 	{
-	    $where = ['promocode.application'=>'pv','time_slots.application'=>'pv'];
+	    $where = ['promocode.application'=>'pv'];
 		$fetch_data = $this->promocodes_model->list_records($where);	
 	
 		$data = array();
@@ -49,6 +49,17 @@ class Promocodes extends Admin_Controller {
 		    $date = new DateTime($row->valid_till);
 		    $end =  $date->format('m-d-Y');
 			$sub_array[] = wordwrap("From: ".$start, 35, "<br>\n").wordwrap("<br>To: ".$end, 35, "<br>\n");
+			
+			// Add status badge based on expiration
+			$current_date = date('Y-m-d');
+			$valid_till_date = date('Y-m-d', strtotime($row->valid_till));
+			
+			if ($valid_till_date < $current_date) {
+				$sub_array[] = '<span class="badge badge-danger">Expired</span>';
+			} else {
+				$sub_array[] = '<span class="badge badge-success">Active</span>';
+			}
+			
 			// ($row->discount_type)? $discount_type='Percentage': $discount_type='Amount';
 			// $sub_array[] = wordwrap($discount_type, 35, "<br>\n");
 			if($row->discount_type ==0)
@@ -78,8 +89,8 @@ class Promocodes extends Admin_Controller {
 
 		$output = array(
 			"draw"                  =>     	intval($_POST["draw"]),			
-			"recordsTotal"          =>   	$this->db->from("promocode")->count_all_results(),
-			 "recordsFiltered"    	=>   	$this->promocodes_model->count_filtered_records(),
+			"recordsTotal"          =>   	$this->db->from("promocode")->where('application', 'pv')->count_all_results(),
+			 "recordsFiltered"    	=>   	$this->promocodes_model->count_filtered_records($where),
 			"data"                  =>     	$data
 		);
 		echo json_encode($output);

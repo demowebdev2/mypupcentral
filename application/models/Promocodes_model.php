@@ -44,10 +44,15 @@ class Promocodes_model extends CI_Model {
 
 	}
 	
-function count_filtered_records(){
+function count_filtered_records($where = null){
 		
 		$this->db->select('promocode.*');
-		$this->db->from('promocode');	
+		$this->db->from('promocode');
+		$this->db->join('time_slots','time_slots.id=promocode.premium_type_id','left');
+		if($where)
+		{
+		    $this->db->where($where);
+		}
 		if(isset($_POST["search"]["value"]))
     	{
     		$this->db->group_start();

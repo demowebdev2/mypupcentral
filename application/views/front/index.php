@@ -738,7 +738,7 @@
 							            </a>
 							        </span>
 							        <span>
-							            <a href="https://www.facebook.com/people/My-Pup-Central/61579137068671/ " target="_blank">
+							            <a href="https://www.facebook.com/people/My-Pup-Central/61579137068671/" target="_blank">
 							                <svg width="50px" height="50px" viewBox="0 0 48 48" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
     
                                             <title>Facebook-color</title>

@@ -42,6 +42,7 @@
                                         <th>Promocode Title</th>
                                         <th>Details</th>
                                         <th>Validity</th>
+                                        <th>Status</th>
                                        <!--  <th>Discount Type</th> -->
                                         <th>Discount</th>
                                         <th>Amount Limit</th>
@@ -161,7 +162,7 @@
                 }
             },
             "columnDefs": [{
-                "targets": [0, 1, 2],
+                "targets": [0, 1, 2, 4],
                 "orderable": false,
             }, ],
 

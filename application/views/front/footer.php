@@ -80,7 +80,7 @@
                                 <h4 class="footer-title ">Follow us on</h4>
                                 <ul class="list-unstyled list-inline footer-nav social-list-footer social-list-color footer-nav-inline">
                                     <li>
-                                        <a class="icon-color " data-bs-placement="top" data-bs-toggle="tooltip" href="https://www.facebook.com/people/My-Pup-Central/61579137068671/ " target="_blank" title="Facebook">
+                                        <a class="icon-color " data-bs-placement="top" data-bs-toggle="tooltip" href="https://www.facebook.com/people/My-Pup-Central/61579137068671/" target="_blank" title="Facebook">
                                             <i class="fab fa-facebook icstyle"></i>
                                         </a>
                                     </li>
