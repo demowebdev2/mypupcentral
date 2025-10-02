@@ -1532,37 +1532,61 @@ class My_ads extends User_Controller
         }
 
         $reposted_count = 0;
+        $debug_info = array();
+        
         foreach ($post_ids as $post_id) {
             // Verify ownership and check if ad is expired (more than 45 days old)
             $ad = $this->common_model->list_row('posts', array('id' => $post_id, 'user_id' => $user_id));
             if ($ad) {
                 $date1 = date_create(date("Y-m-d H:i:s"));
-                $date2 = date_create($ad->createdate);
+                $date2 = date_create($ad->created_at);
                 $diff = date_diff($date1, $date2);
                 $days = $diff->format("%a");
+                
+                $debug_info[] = "Post ID: $post_id, Days: $days, Created: {$ad->created_at}";
 
                 // Only repost if ad is expired (more than 45 days old)
                 if ($days > 45) {
-                    // Add to cart for reposting
-                    $cart_data = array(
-                        'user_id' => $user_id,
-                        'post_id' => $post_id,
+                    // Update post for reposting (same as single repost)
+                    $data_update = array(
+                        'reviewed' => 0,
+                        'repost' => 1,
                         'created_at' => date('Y-m-d H:i:s')
                     );
-                    $this->common_model->create_record($cart_data, 'cart');
+                    $this->common_model->update_records($data_update, ['id' => $post_id], 'posts');
+                    
+                    // Create repost log entry (same as single repost)
+                    $old_data = array(
+                        'post_id' => $post_id,
+                        'txn_id' => $ad->txn_id,
+                        'created_date' => $ad->created_at,
+                        'created_at' => date('Y-m-d H:i:s')
+                    );
+                    $this->common_model->create_record($old_data, 'repost_log');
+                    
                     $reposted_count++;
                 }
+            } else {
+                $debug_info[] = "Post ID: $post_id - Not found or not owned";
             }
         }
 
         if ($reposted_count > 0) {
             $this->output
                 ->set_content_type('application/json')
-                ->set_output(json_encode(array('success' => true, 'message' => "Added {$reposted_count} expired ad(s) to cart for reposting")));
+                ->set_output(json_encode(array(
+                    'success' => true,
+                    'message' => "Successfully reposted {$reposted_count} expired ad(s)",
+                    'redirect' => base_url('my-cart')
+                )));
         } else {
             $this->output
                 ->set_content_type('application/json')
-                ->set_output(json_encode(array('success' => false, 'message' => 'No expired ads were found to repost')));
+                ->set_output(json_encode(array(
+                    'success' => false, 
+                    'message' => 'No expired ads were found to repost',
+                    'debug' => $debug_info
+                )));
         }
     }
 	

@@ -455,12 +455,27 @@ $(document).ready(function() {
             }
             
             if (response && response.success) {
-                Swal.fire("Success", response.message, "success");
+                Swal.fire({
+                    title: 'Success',
+                    text: response.message,
+                    icon: 'success',
+                    showConfirmButton: false,
+                    timer: 1200
+                });
+                // Redirect to cart if provided (to match single repost behavior)
+                if (response.redirect) {
+                    setTimeout(function(){ window.location.href = response.redirect; }, 1200);
+                    return;
+                }
                 var dt = $("#datatable").DataTable();
                 dt.ajax.reload(null, false);
                 $('#clear-selection').click(); // Clear selection
             } else {
-                Swal.fire("Error", response.message || "An error occurred", "error");
+                var errorMessage = response.message || "An error occurred";
+                if (response.debug) {
+                    errorMessage += "\n\nDebug Info:\n" + response.debug.join("\n");
+                }
+                Swal.fire("Error", errorMessage, "error");
             }
         }).fail(function(xhr, status, error) {
             console.error('AJAX Error:', status, error);
