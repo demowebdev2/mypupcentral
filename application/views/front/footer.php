@@ -443,6 +443,19 @@ top:-7px;" xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 448 512"
 </script>
 
 
+<script>
+$(document).ready(function () {
+    setTimeout(function () {
+        $("img").each(function () {
+            console.log("HEY")
+            var src = $(this).attr("src");
+            if (src && src.indexOf("http://localhost/pet/uploads/") !== -1) {
+                $(this).attr("src", src.replace("http://localhost/pet/uploads/", "https://mypupcentral.com/uploads/"));
+            }
+        });
+    }, 3000);
+});
+</script>
 
 
 
