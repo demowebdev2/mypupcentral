@@ -39,8 +39,7 @@ class Promocodes extends Admin_Controller {
 			$action = '';
 			$sub_array = array();
 			$sub_array[] = $count;
-	    	 ($row->application=='ns')? $application = 'nosheddoodles.com' :  $application =  'puppyverify.com';
-			$sub_array[] = strtoupper(wordwrap($row->promo_code, 35, "<br>\n")).'<small><br>'.wordwrap($application, 35, "<br>\n").'</small>';
+			$sub_array[] = strtoupper(wordwrap($row->promo_code, 35, "<br>\n"));
 			($row->limit_type)? $limit_type='Unlimited': $limit_type='Limited';
 			$sub_array[] = wordwrap($row->time_slot_title, 35, "<br>\n").'<br>'.wordwrap($limit_type, 35, "<br>\n");
 			

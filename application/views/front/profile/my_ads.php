@@ -373,9 +373,14 @@ $(document).ready(function() {
             }
         }
 
-        // Show confirmation dialog
-        var actionText = action === 'price' ? 'Change Price' : 
-                        action === 'adopted' ? 'Mark as Adopted' : 'Repost';
+        // For price changes, skip generic confirmation and go directly to price entry
+        if (action === 'price') {
+            executeBulkAction(action, selectedAds);
+            return;
+        }
+        
+        // Show confirmation dialog for other actions
+        var actionText = action === 'adopted' ? 'Mark as Adopted' : 'Repost';
         
         Swal.fire({
             title: 'Confirm Bulk Action',
@@ -416,6 +421,7 @@ $(document).ready(function() {
                 },
                 showCancelButton: true,
                 confirmButtonText: 'Update Price',
+                inputLabel: 'New price for selected ads',
                 preConfirm: (price) => {
                     if (!price || price <= 0) {
                         Swal.showValidationMessage('Please enter a valid price');
