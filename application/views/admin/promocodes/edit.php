@@ -145,6 +145,45 @@
                     </div>  
                  
                 
+                 <div class="row">
+                    <div class="col-md-6">
+                      <label for="state">Application Type</label>
+                      <div class="input-group mb-3">
+                        <select class="form-control" name="application_type" required="">
+                          <option value="training" <?php if($result[0]->application_type=='training') echo 'selected'?>>Training Only</option>
+                          <option value="ad" <?php if($result[0]->application_type=='ad') echo 'selected'?>>Ad Posting Only</option>
+                          <option value="both" <?php if($result[0]->application_type=='both') echo 'selected'?>>Both Training & Ads</option>
+                        </select>
+                      </div>
+                    </div>
+                    <div class="col-md-6">
+                      <label for="state">One Time Per User</label>
+                      <div class="input-group mb-3">
+                        <select class="form-control" name="one_time_per_user">
+                          <option value="0" <?php if($result[0]->one_time_per_user==0) echo 'selected'?>>No - Multiple uses allowed</option>
+                          <option value="1" <?php if($result[0]->one_time_per_user==1) echo 'selected'?>>Yes - One time only per user</option>
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="row">
+                    <div class="col-md-6">
+                      <label for="state">Status</label>
+                      <div class="input-group mb-3">
+                        <select class="form-control" name="is_active">
+                          <option value="1" <?php if($result[0]->is_active==1) echo 'selected'?>>Active</option>
+                          <option value="0" <?php if($result[0]->is_active==0) echo 'selected'?>>Inactive</option>
+                        </select>
+                      </div>
+                    </div>
+                    <div class="col-md-12">
+                      <label for="state">Description</label>
+                      <div class="input-group mb-3">
+                        <textarea name="description" class="form-control" rows="3" placeholder="Enter description for this promo code (optional)"><?php echo isset($result[0]->description) ? $result[0]->description : ''; ?></textarea>
+                      </div>
+                    </div>
+                  </div>
 
                     </div>
                     <!-- /.card-body -->
@@ -165,7 +204,6 @@
     
     $(document).ready(function(){  
        $('#valid_from').Zebra_DatePicker({
-            direction: 1,
              format: 'm/d/Y'
         });
          $('#valid_till').Zebra_DatePicker({

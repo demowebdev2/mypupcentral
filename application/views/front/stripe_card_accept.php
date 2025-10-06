@@ -1,46 +1,71 @@
-<script src="https://js.stripe.com/v2/"></script>
-<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script><script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+<script src="https://js.stripe.com/v3/"></script>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
 <script>
-// Set your publishable key
-Stripe.setPublishableKey('<?php echo $this->config->item('stripe_publishable_key'); ?>');
+// Stripe v3 initialization
+var stripe = Stripe('<?php echo $this->config->item('stripe_publishable_key'); ?>');
+var elements = stripe.elements();
+var card;
 
-// Callback to handle the response from stripe
-function stripeResponseHandler(status, response) {
-    if (response.error) {
-        // Enable the submit button
-        $('#payBtn').removeAttr("disabled");
-        // Display the errors on the form
-        $(".card-errors").html('<div class="alert alert-danger"><p>'+response.error.message+'</p></div>');
-    } else {
-        var form$ = $("#paymentFrm");
-        // Get token id
-        var token = response.id;
-        // Insert the token into the form
-        form$.append("<input type='hidden' name='stripeToken' value='" + token + "' />");
-        // Submit form to the server
-        form$.get(0).submit();
+document.addEventListener('DOMContentLoaded', function(){
+    // Create and mount the Card Element
+    var style = {
+        base: {
+            color: '#32325d',
+            fontFamily: '"Helvetica Neue", Helvetica, sans-serif',
+            fontSmoothing: 'antialiased',
+            fontSize: '16px',
+            '::placeholder': { color: '#aab7c4' }
+        },
+        invalid: { color: '#fa755a', iconColor: '#fa755a' }
+    };
+    
+    if (document.getElementById('card-element')) {
+        card = elements.create('card', { hidePostalCode: true, style: style });
+        card.mount('#card-element');
+        card.on('change', function(event) {
+            if (event.error) {
+                $(".card-errors").html('<div class="alert alert-danger"><p>' + event.error.message + '</p></div>');
+            } else {
+                $(".card-errors").empty();
+            }
+        });
     }
-}
+});
 
 $(document).ready(function() {
     // On form submit
-    $("#paymentFrm").submit(function() {
+    $("#paymentFrm").submit(function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        
         // Disable the submit button to prevent repeated clicks
         $('#payBtn').attr("disabled", "disabled");
         
-        // Create single-use token to charge the user
-        Stripe.createToken({
-            number: $('#card_number').val(),
-            exp_month: $('#card_exp_month').val(),
-            exp_year: $('#card_exp_year').val(),
-            cvc: $('#card_cvc').val()
-        }, stripeResponseHandler);
+        if (!card) {
+            console.error('Stripe Card Element not initialized');
+            $(".card-errors").html('<div class="alert alert-danger"><p>Payment form is not ready. Please reload the page.</p></div>');
+            $('#payBtn').removeAttr("disabled");
+            return false;
+        }
         
-        // Submit from callback
+        // Create token using Stripe v3
+        stripe.createToken(card).then(function(result) {
+            if (result.error) {
+                $(".card-errors").html('<div class="alert alert-danger"><p>' + result.error.message + '</p></div>');
+                $('#payBtn').removeAttr("disabled");
+            } else {
+                var form$ = $("#paymentFrm");
+                // Get token id
+                var token = result.token.id;
+                // Insert the token into the form
+                form$.append("<input type='hidden' name='stripeToken' value='" + token + "' />");
+                // Submit form to the server
+                form$.get(0).submit();
+            }
+        });
+        
         return false;
     });
-
-    
 });
 
 </script>
@@ -193,26 +218,11 @@ $(document).ready(function () {
                 </div>
                 <div class="col-md-6">
                   <div class="form-group">
-                    <label>CARD NUMBER</label>
-                    <input type="text" name="card_number" class="form-control" id="card_number" placeholder="1234 1234 1234 1234" autocomplete="off" data-inputmask="'mask': '9999 9999 9999 9999'"  required="">
+                    <label>CARD DETAILS</label>
+                    <div id="card-element" class="form-control" style="padding-top: 10px; padding-bottom: 10px;">
+                      <!-- Stripe Elements will create form elements here -->
+                    </div>
                 </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="form-group">
-                            <label>EXPIRY DATE</label>
-                               <div class="d-flex">
-                              <!--   <input type="text" class="form-control" name="card_exp_month" id="card_exp_month" placeholder="MM" required="" data-inputmask="'mask': '99/999'"> -->
-                                 <input type="text" class="form-control" name="card_exp_month" id="card_exp_month" placeholder="MM" required="" data-inputmask="'mask': '99'">
-                                 <input type="text" class="form-control" name="card_exp_year" id="card_exp_year" placeholder="YYYY" data-inputmask="'mask': '9999'"required="">
-                               </div>
-                        </div>
-                </div>
-                <div class="col-md-6">
-
-                        <div class="form-group">
-                            <label>CVC CODE</label>
-                            <input type="text" name="card_cvc" class="form-control" id="card_cvc" placeholder="CVC" autocomplete="off" required="" data-inputmask="'mask': '999'">
-                        </div>
                 </div>
                 <input type="hidden" name="tot" id="tot" value="<?=$tot?>">
                 <input type="hidden" name="ad_id" id="ad_id" value="<?=$ad_id?>">

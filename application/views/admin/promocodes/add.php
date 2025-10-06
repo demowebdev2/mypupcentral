@@ -193,7 +193,6 @@
     
     $(document).ready(function(){  
        $('#valid_from').Zebra_DatePicker({
-            direction: 1,
              format: 'm/d/Y'
         });
          $('#valid_till').Zebra_DatePicker({

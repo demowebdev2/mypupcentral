@@ -1,4 +1,4 @@
-<script src="https://js.stripe.com/v2/"></script>
+<script src="https://js.stripe.com/v3/"></script>
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
 
@@ -12,74 +12,118 @@
 
 
 <script>
-  // Set your publishable key
-  Stripe.setPublishableKey('<?php echo $this->config->item('stripe_publishable_key'); ?>');
+  // Stripe v3 initialization
+  var stripe = Stripe('<?php echo $this->config->item('stripe_publishable_key'); ?>');
+  var elements = stripe.elements();
+  var card;
 
-  // Callback to handle the response from stripe
-  function stripeResponseHandler(status, response) {
-    if (response.error) {
-      // Enable the submit button
-      $('#payBtn').removeAttr("disabled");
-      // Display the errors on the form
-      $(".card-errors").html('<div class="alert alert-danger"><p>' + response.error.message + '</p></div>');
-    } else {
-      var form$ = $("#paymentFrm");
-      // Get token id
-      var token = response.id;
-      // Insert the token into the form
-      form$.append("<input type='hidden' name='stripeToken' value='" + token + "' />");
-      // Submit form to the server
-      form$.get(0).submit();
+  document.addEventListener('DOMContentLoaded', function(){
+    // Create and mount the Card Element
+    var style = {
+      base: {
+        color: '#32325d',
+        fontFamily: '"Helvetica Neue", Helvetica, sans-serif',
+        fontSmoothing: 'antialiased',
+        fontSize: '16px',
+        '::placeholder': { color: '#aab7c4' }
+      },
+      invalid: { color: '#fa755a', iconColor: '#fa755a' }
+    };
+    if (document.getElementById('card-element')) {
+      card = elements.create('card', { hidePostalCode: true, style: style });
+      card.mount('#card-element');
+      card.on('change', function(event) {
+        if (event.error) {
+          $(".card-errors").html('<div class="alert alert-danger"><p>' + event.error.message + '</p></div>');
+        } else {
+          $(".card-errors").empty();
+        }
+      });
     }
-  }
+  });
 
   $(document).ready(function() {
-     
     $("#paymentFrm").submit(function(e) {
-         var dd=$("#restrict").val();
-         console.log('Form submit triggered, restrict value:', dd);
-         
-    // On form submit
-    if(dd==0)
-    {
-      console.log('Processing paid order with Stripe');
-      // Disable the submit button to prevent repeated clicks
-      $('#payBtn').attr("disabled", "disabled");
+      var dd = $("#restrict").val();
+      console.log('Form submit triggered, restrict value:', dd);
 
-      // Create single-use token to charge the user
-      Stripe.createToken({
-        number: $('#card_number').val(),
-        exp_month: $('#card_exp_month').val(),
-        exp_year: $('#card_exp_year').val(),
-        cvc: $('#card_cvc').val()
-      }, stripeResponseHandler);
+      if (dd == 0) {
+        console.log('Processing paid order with Stripe v3');
+        e.preventDefault();
+        e.stopPropagation();
+        $('#payBtn').attr("disabled", "disabled");
 
-      // Submit from callback
-      return false;
-      
-    }
-    else if(dd==1)
-    {
-      console.log('Processing free order, allowing form submission');
-      // For free orders (promo code applied), allow form submission
-      $('#payBtn').attr("disabled", "disabled");
-      return true;
-    }
-    else
-    {
-      console.log('Unknown restrict value:', dd, 'allowing default submission');
-      return true;
-    }
+        if (!card) {
+          console.error('Stripe Card Element not initialized');
+          $(".card-errors").html('<div class="alert alert-danger"><p>Payment form is not ready. Please reload the page.</p></div>');
+          $('#payBtn').removeAttr("disabled");
+          return false;
+        }
+
+        stripe.createToken(card).then(function(result) {
+          if (result.error) {
+            $(".card-errors").html('<div class="alert alert-danger"><p>' + result.error.message + '</p></div>');
+            $('#payBtn').removeAttr("disabled");
+          } else {
+            var form$ = $("#paymentFrm");
+            form$.append("<input type='hidden' name='stripeToken' value='" + result.token.id + "' />");
+            form$.get(0).submit();
+          }
+        });
+        return false;
+      } else if (dd == 1) {
+        console.log('Processing free order, allowing form submission');
+        $('#payBtn').attr("disabled", "disabled");
+        return true;
+      } else {
+        console.log('Unknown restrict value:', dd, 'allowing default submission');
+        return true;
+      }
     });
-    
-
-
   });
 </script>
 
 <div class="p-0 mt-lg-4 mt-md-3 mt-3"></div>
 
 <style>
+/* Form validation styles */
+.is-invalid {
+    border-color: #dc3545 !important;
+    box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25) !important;
+}
+
+.is-valid {
+    border-color: #28a745 !important;
+    box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25) !important;
+}
+
+.invalid-feedback {
+    display: block;
+    width: 100%;
+    margin-top: 0.25rem;
+    font-size: 0.875rem;
+    color: #dc3545;
+    font-weight: 500;
+}
+
+.valid-feedback {
+    display: block;
+    width: 100%;
+    margin-top: 0.25rem;
+    font-size: 0.875rem;
+    color: #28a745;
+    font-weight: 500;
+}
+
+@keyframes errorPulse {
+    0% { box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25); }
+    50% { box-shadow: 0 0 0 0.4rem rgba(220, 53, 69, 0.4); }
+    100% { box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25); }
+}
+
+.error-highlight {
+    animation: errorPulse 1s ease-in-out;
+}
 @media (max-width: 574px) {
  #rad1, #rad0 {
   position: absolute;
@@ -121,6 +165,11 @@
  .items_box h3{
      font-size:18px;
  }
+}
+
+#wrapper {
+    padding-top: 0px !important;
+    background-color: #FFFFFF;
 }
 
 </style>
@@ -394,25 +443,8 @@
                   </div>
                   <div class="col-md-6">
                     <div class="form-group">
-                      <label>CARD NUMBER</label>
-                      <input type="text" name="card_number" class="form-control" id="card_number" placeholder="1234 1234 1234 1234" autocomplete="off" data-inputmask="'mask': '9999 9999 9999 9999'" >
-                    </div>
-                  </div>
-                  <div class="col-md-6">
-                    <div class="form-group">
-                      <label>EXPIRY DATE</label>
-                      <div class="d-flex">
-                        <!--   <input type="text" class="form-control" name="card_exp_month" id="card_exp_month" placeholder="MM"  data-inputmask="'mask': '99/999'"> -->
-                        <input type="text" class="form-control" name="card_exp_month" id="card_exp_month" placeholder="MM"  data-inputmask="'mask': '99'">
-                        <input type="text" class="form-control" name="card_exp_year" id="card_exp_year" placeholder="YYYY" data-inputmask="'mask': '9999'" >
-                      </div>
-                    </div>
-                  </div>
-                  <div class="col-md-6">
-
-                    <div class="form-group">
-                      <label>CVC CODE</label>
-                      <input type="text" name="card_cvc" class="form-control" id="card_cvc" placeholder="CVC" autocomplete="off"  data-inputmask="'mask': '999'">
+                      <label>CARD DETAILS</label>
+                      <div id="card-element" class="form-control" style="padding-top: 10px; padding-bottom: 10px;"></div>
                     </div>
                   </div>
                   <input type="hidden" name="tot" id="tot" value="<?= $tot ?>">
@@ -629,5 +661,174 @@
     }
 
     });
+  });
+</script>
+<script>
+  // Validation helpers and gating for Request Training
+  function rt_showFieldError(field, message) {
+    if (!field || !message) return;
+    try {
+      field.classList.add('is-invalid');
+      field.classList.remove('is-valid');
+      var errorId = (field.name || field.id || 'field') + '_error';
+      var existingError = document.getElementById(errorId);
+      if (existingError) {
+        existingError.textContent = message;
+      } else {
+        var errorDiv = document.createElement('div');
+        errorDiv.id = errorId;
+        errorDiv.className = 'invalid-feedback';
+        errorDiv.textContent = message;
+        if (field.parentNode) field.parentNode.appendChild(errorDiv);
+      }
+    } catch (e) { console.error('Error showing field error:', e); }
+  }
+
+  function rt_clearFieldError(field) {
+    if (!field) return;
+    try {
+      field.classList.remove('is-invalid');
+      field.classList.add('is-valid');
+      var errorId = (field.name || field.id || 'field') + '_error';
+      var existingError = document.getElementById(errorId);
+      if (existingError) existingError.remove();
+    } catch (e) { console.error('Error clearing field error:', e); }
+  }
+
+  function rt_clearAllErrors() {
+    try {
+      document.querySelectorAll('.is-invalid').forEach(function(el){ el.classList.remove('is-invalid'); });
+      document.querySelectorAll('.invalid-feedback').forEach(function(msg){ if (msg && msg.parentNode) msg.remove(); });
+    } catch (e) { console.error('Error clearing all errors:', e); }
+  }
+
+  function rt_scrollToFirstError(field) {
+    if (!field) return;
+    try {
+      field.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      field.focus();
+      field.classList.add('error-highlight');
+      setTimeout(function(){ if (field) field.classList.remove('error-highlight'); }, 2000);
+    } catch (e) { console.error('Error scrolling to first error:', e); }
+  }
+
+  function rt_validateForm() {
+    var isValid = true;
+    var firstErrorField = null;
+    try {
+      var required = [
+        { sel: '[name="first_name"]', label: 'First Name' },
+        { sel: '[name="last_name"]', label: 'Last Name' },
+        { sel: '[name="phone"]', label: 'Phone' },
+        { sel: '[name="email"]', label: 'Email' },
+        { sel: '[name="address"]', label: 'Address' },
+        { sel: '[name="city"]', label: 'City' },
+        { sel: '[name="state"]', label: 'State' },
+        { sel: '[name="zip_code"]', label: 'Zip Code' },
+        { sel: '[name="puppy_name"]', label: 'Puppy Name' },
+        { sel: '[name="puppy_dob"]', label: 'Puppy DOB' },
+        { sel: '[name="start_date"]', label: 'Preferred Start Date' },
+        { sel: '#agreement', type: 'checkbox', label: 'Agreement' }
+      ];
+      required.forEach(function(f){
+        var el = document.querySelector(f.sel);
+        if (!el) return;
+        var empty = f.type === 'checkbox' ? !el.checked : !(el.value && el.value.trim());
+        if (empty) {
+          rt_showFieldError(el, f.label + ' is required');
+          if (!firstErrorField) firstErrorField = el;
+          isValid = false;
+        } else {
+          rt_clearFieldError(el);
+        }
+      });
+
+      var emailEl = document.querySelector('[name="email"]');
+      if (emailEl && emailEl.value && emailEl.value.trim()) {
+        var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(emailEl.value.trim())) {
+          rt_showFieldError(emailEl, 'Please enter a valid email address');
+          if (!firstErrorField) firstErrorField = emailEl;
+          isValid = false;
+        }
+      }
+
+      var phoneRegex = /^\([0-9]{3}\) [0-9]{3}-[0-9]{4}$/;
+      var phoneEl = document.querySelector('[name="phone"]');
+      if (phoneEl && phoneEl.value && phoneEl.value.trim() && !phoneRegex.test(phoneEl.value.trim())) {
+        rt_showFieldError(phoneEl, 'Please enter phone number in format (888) 555-3333');
+        if (!firstErrorField) firstErrorField = phoneEl;
+        isValid = false;
+      }
+      var breederPhoneEl = document.querySelector('[name="breeder_phone"]');
+      if (breederPhoneEl && breederPhoneEl.value && breederPhoneEl.value.trim() && !phoneRegex.test(breederPhoneEl.value.trim())) {
+        rt_showFieldError(breederPhoneEl, 'Please enter phone number in format (888) 555-3333');
+        if (!firstErrorField) firstErrorField = breederPhoneEl;
+        isValid = false;
+      }
+    } catch (e) {
+      console.error('Validation error:', e);
+      isValid = false;
+    }
+    return { isValid: isValid, firstErrorField: firstErrorField };
+  }
+
+  // Real-time validators and phone formatting
+  $(document).ready(function(){
+    function formatPhone($input){
+      try {
+        var value = $input.val().replace(/\D/g, '');
+        var formatted = '';
+        if (value.length > 0) {
+          if (value.length <= 3) formatted = '(' + value;
+          else if (value.length <= 6) formatted = '(' + value.substring(0,3) + ') ' + value.substring(3);
+          else formatted = '(' + value.substring(0,3) + ') ' + value.substring(3,6) + '-' + value.substring(6,10);
+        }
+        $input.val(formatted);
+      } catch (e) { console.error('Phone format error:', e); }
+    }
+    $('[name="phone"]').on('input', function(){ formatPhone($(this)); });
+    $('[name="breeder_phone"]').on('input', function(){ formatPhone($(this)); });
+
+    $('[name="first_name"]').on('blur', function(){ this.value.trim() === '' ? rt_showFieldError(this, 'First Name is required') : rt_clearFieldError(this); });
+    $('[name="last_name"]').on('blur', function(){ this.value.trim() === '' ? rt_showFieldError(this, 'Last Name is required') : rt_clearFieldError(this); });
+    $('[name="email"]').on('blur', function(){
+      var v = this.value.trim();
+      if (v === '') return rt_showFieldError(this, 'Email is required');
+      var rgx = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!rgx.test(v)) return rt_showFieldError(this, 'Please enter a valid email address');
+      rt_clearFieldError(this);
+    });
+    $('[name="phone"]').on('blur', function(){
+      var v = this.value.trim();
+      if (v === '') return rt_showFieldError(this, 'Phone is required');
+      var rgx = /^\([0-9]{3}\) [0-9]{3}-[0-9]{4}$/;
+      if (!rgx.test(v)) return rt_showFieldError(this, 'Please enter phone number in format (888) 555-3333');
+      rt_clearFieldError(this);
+    });
+    $('[name="address"]').on('blur', function(){ this.value.trim() === '' ? rt_showFieldError(this, 'Address is required') : rt_clearFieldError(this); });
+    $('[name="city"]').on('blur', function(){ this.value.trim() === '' ? rt_showFieldError(this, 'City is required') : rt_clearFieldError(this); });
+    $('[name="state"]').on('blur', function(){ this.value.trim() === '' ? rt_showFieldError(this, 'State is required') : rt_clearFieldError(this); });
+    $('[name="zip_code"]').on('blur', function(){ this.value.trim() === '' ? rt_showFieldError(this, 'Zip Code is required') : rt_clearFieldError(this); });
+    $('[name="puppy_name"]').on('blur', function(){ this.value.trim() === '' ? rt_showFieldError(this, 'Puppy Name is required') : rt_clearFieldError(this); });
+    $('[name="puppy_dob"]').on('blur', function(){ this.value.trim() === '' ? rt_showFieldError(this, 'Puppy DOB is required') : rt_clearFieldError(this); });
+    $('[name="start_date"]').on('blur', function(){ this.value.trim() === '' ? rt_showFieldError(this, 'Preferred Start Date is required') : rt_clearFieldError(this); });
+  });
+
+  // Gate submission BEFORE jQuery handlers using capture
+  document.addEventListener('DOMContentLoaded', function(){
+    var form = document.getElementById('paymentFrm');
+    if (!form) return;
+    form.addEventListener('submit', function(e){
+      var restrictVal = document.getElementById('restrict') ? document.getElementById('restrict').value : '0';
+      if (restrictVal == '1') return; // allow free orders
+      rt_clearAllErrors();
+      var result = rt_validateForm();
+      if (!result.isValid) {
+        e.preventDefault();
+        e.stopPropagation();
+        rt_scrollToFirstError(result.firstErrorField);
+      }
+    }, true); // capture so we run before jQuery submit handlers
   });
 </script>

@@ -242,7 +242,11 @@ public function save()
 					'valid_till'=>$this->input->post('valid_till'),
 					'discount_type'=>$this->input->post('discount_type'),				
 					'amount_limit'=>$this->input->post('amount_limit'),
-					'usage_times'=>$this->input->post('usage_times'),					
+					'usage_times'=>$this->input->post('usage_times'),
+					'application_type'=>$this->input->post('application_type'),
+					'one_time_per_user'=>$this->input->post('one_time_per_user') ? 1 : 0,
+					'is_active'=>$this->input->post('is_active') ? 1 : 0,
+					'description'=>$this->input->post('description'),					
 					'updated_at'=>date("Y-m-d H:i:s")
 				);
 				
