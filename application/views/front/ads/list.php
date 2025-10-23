@@ -699,7 +699,7 @@ your puppy.</p>
 
                         </div>
                         
-                        <div id="loading_div d-none">
+                        <div id="loading_div" style="display:none">
 <div class="row w-100 spdiv"><div class="col-12"><div class="text-center"><span class="spinner"><span></span><span></span><span></span><span></span></span></div></div></div>
                         </div>
 

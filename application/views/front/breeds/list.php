@@ -558,7 +558,7 @@ if (isset($_GET['location'])) {
 
 
                         </div>
-                        <div id="loading_div" style="display:none">
+                        <div id="loading_div"  style="display:none">
                             <div class="row w-100 spdiv">
                                 <div class="col-12">
                                     <div class="text-center"><span
@@ -934,6 +934,9 @@ var updated_slug=null;
                     $("#locSearch").select2({
                         data: response,
                     });
+                },
+                error: function(xhr, status, error) {
+                    console.log('AJAX Error in update_states: ' + error);
                 }
             });
 
@@ -980,6 +983,13 @@ var updated_slug=null;
                 // $("#postsList").empty();
 
                 $("#loading_div").show();
+                
+                // Failsafe: Hide spinner after 10 seconds if AJAX doesn't complete
+                setTimeout(function() {
+                    $("#loading_div").hide();
+                    $("div#loading_div\ d-none").hide();
+                    console.log('Spinner hidden by timeout failsafe');
+                }, 10000);
 
 
 
@@ -1007,6 +1017,8 @@ var updated_slug=null;
                     success: function (response) {
                         resp_status = response.status;
                         $("#loading_div").hide();
+                        $("div#loading_div\ d-none").hide();
+                        console.log('AJAX Success - Response status:', response.status);
                         $("#pageno").empty();
                         if (response.status == 1) {
                             $.each(response.products, function (i, item) {
@@ -1028,6 +1040,12 @@ var updated_slug=null;
 
 
 
+                    },
+                    error: function(xhr, status, error) {
+                        // Always hide loading spinner on error
+                        $("#loading_div").hide();
+                        $("div#loading_div\ d-none").hide();
+                        console.log('AJAX Error: ' + error);
                     }
                 });
             }
@@ -1056,6 +1074,9 @@ var updated_slug=null;
                     dataType: "JSON",
                     success: function (response) {
                         $('.size_div').append(response.data);
+                    },
+                    error: function(xhr, status, error) {
+                        console.log('AJAX Error in load_size: ' + error);
                     }
                 });
 
@@ -1079,6 +1100,10 @@ var updated_slug=null;
                         $("#postsListsold").append(item);
                     });
                     slider();
+                },
+                error: function(xhr, status, error) {
+                    $("#postsListsold").empty();
+                    console.log('AJAX Error in loadPagination_sold: ' + error);
                 }
             });
 

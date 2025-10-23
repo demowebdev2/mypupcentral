@@ -281,8 +281,16 @@ else{
 			
 				}
 				
-					$kk .=$extra. ' <div class="col-6 col-md-3 col-lg scroll_elem_div" id="'.$div.'">
-                    <div class="item-list p-0 mb-3">
+					// Gender badge styling
+				$gender_badge = '';
+				if(!empty($row->puppy_sex)) {
+					$gender_color = strtolower($row->puppy_sex) === 'male' ? '#a6e1ff' : '#ff99cc';
+					$gender_text = ucfirst(strtolower($row->puppy_sex));
+					$gender_badge = '<span class="gender-badge" style="background-color: '.$gender_color.'; color: #000; padding: 3px 10px; border-radius: 12px; font-size: 12px; font-weight: bold; display: inline-block; margin-top: 5px;">'.$gender_text.'</span>';
+				}
+				
+				$kk .=$extra. ' <div class="col-6 col-md-3 col-lg scroll_elem_div" id="'.$div.'">
+                    <div class="item-list p-0 mb-3" style="border-radius: 10px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
 
                         <div class="row aqr">
                             <div class="col-sm-2 col-12 no-padding photobox">
@@ -303,35 +311,27 @@ else{
 											 '.$premium_div.'
 											 
 												<div class="row" style="width: 100%;">
-												<div class="text-center">	<div class="col-12" style=" padding: 10px 0px 0px;">
-													<span class="item-location">
-															
-
-														'.$row->breed_name.'
-
-
-														</span></div></div>
-													<div class="text-center"><div class="col-12" style=" padding: 0px; width:100%">
-														<h5 class="add-title">
-															<a href="'.base_url().'ad/'. $row->postid .'">
+													<div class="text-center"><div class="col-12" style=" padding: 10px 0px 0px; width:100%">
+														<h5 class="add-title" style="margin-bottom: 5px;">
+															<a href="'.base_url().'ad/'. $row->postid .'" style="color: #000; font-weight: bold;">
 															 '.$row->title.'
 															</a>
 														</h5>
 													</div></div>
+												<div class="text-center">	<div class="col-12" style=" padding: 0px;">
+													<span class="item-breed" style="color: #666; font-size: 14px; display: block;">
+														'.$row->breed_name.'
+													</span>
+												</div></div>
+												<div class="text-center">	<div class="col-12" style=" padding: 5px 0px 0px;">
+													'.$gender_badge.'
+												</div></div>
 													<div class="text-center">
 													<div class="col-12">
 													
-														<h2 class="item-price pb-0" style=" padding: 0px;align-items: center;color:#8cc63f;">
+														<h2 class="item-price pb-0" style=" padding: 10px 0px 0px;align-items: center;color:#8cc63f;">
 															 $'. $row->asking_price .' </h2>
 													</div></div>
-												<div class="text-center">	<div class="col-12" style=" padding: 10px 0px 0px;">
-													<span class="item-location">
-															<i class="icon-location-2"></i>&nbsp;
-
-														'.$row->address.'
-
-
-														</span></div></div>
 												</div>
 
 
@@ -412,7 +412,101 @@ else{
                 $data['status']=1;
 			} else {
                 $data['status']=0;
-				$view[] = "<div class='col-12 col-md-12 p-2'><div class='text-center'><br><br><br><br><h2 style='font-size:60px'><i class='fas fa-search'></i></h2><h3><b>Sorry! No Result found.</b></h3></div></div>";
+                
+                // Check if this is a breed-specific search with no results
+                if(!empty($_POST['breed'])) {
+                    // Get breed name for the custom message
+                    $breed_info = $this->common_model->list_row('breeds', array('id' => $_POST['breed']));
+                    $breed_name = !empty($breed_info) ? $breed_info->breed_name : 'this breed';
+                    
+                    // Show custom message for breed pages
+                    $view[] = "<div class='col-12 col-md-12 p-2'><div class='text-center'><br><br><h3><b>There are no {$breed_name} puppies currently available. Please continue watching this page for updates. Browse the darling puppies below!</b></h3><br></div></div>";
+                    
+                    // Load fallback puppies from all available breeds
+                    $fallback_where = array('posts.is_sold'=>0, 'posts.priority'=>1);
+                    $fallback_result = $this->ads_model->get_ads_pagination($fallback_where, array(), 12, 0, 'posts.created_at', 'DESC', 1, array());
+                    
+                    if(!empty($fallback_result)) {
+                        foreach ($fallback_result as $key=>$row) {
+                            $fe_video='';
+                            $fe_img='';
+                            if($row->featured_image_from=='puppyverify.com'){$lnk= PV; }else{ $lnk= NS; } 
+                            if($row->featured_video_from=='puppyverify.com'){$lnk2= PV; }else{ $lnk2= NS; } 
+                            
+                            if (!empty($row->featured_video)) {
+                                $fe_video=  '<div class="videoSlate" style="width:100%; position:relative; background-color:#000; ">
+                                <video class="thevideo" muted loop  style="width:100%;height:200px;margin: 0px auto;">
+                                    <source src="'.$lnk2.'uploads/puppies/'.$row->featured_video.'"  type="video/mp4">
+                                    Your browser does not support the video tag.
+                                </video>
+                                <img src="'.base_url().'assets/watermark.png" style="position:absolute; right:10px; top:10px; opacity:0.5; width:60px">
+                            </div>';
+                            }
+                            if(!empty($row->featured_image)) {
+                                $fe_img='<img src="'.$lnk.'uploads/puppies/pv/thumb_'.$row->featured_image.'" style="
+                                width: 100%;
+                                object-fit: cover;
+                                " class="lazyload thumbnail no-margin" alt="'.$row->title.'- '.$row->breed_name.' - My Pup Central" data-nsfw-filter-status="sfw">
+                                                                            ';
+                            }
+                            
+                            // Gender badge
+                            $gender_badge = '';
+                            if(!empty($row->puppy_sex)) {
+                                $gender_color = strtolower($row->puppy_sex) === 'male' ? '#87CEEB' : '#FFB6C1';
+                                $gender_text = ucfirst(strtolower($row->puppy_sex));
+                                $gender_badge = '<span class="gender-badge" style="background-color: '.$gender_color.'; color: white; padding: 3px 10px; border-radius: 12px; font-size: 12px; font-weight: bold; display: inline-block; margin-top: 5px;">'.$gender_text.'</span>';
+                            }
+                            
+                            $view[] = '<div class="col-lg-3">
+                                <div class="item-list p-0 mb-3">
+                                    <div class="row aqr">
+                                        <div class="col-sm-2 col-12 no-padding photobox">
+                                            <div class="add-image w-100">
+                                                <a href="'.base_url().'ad/'.$row->postid.'/'.$row->slug.'">
+                                                    <div class="postImg-slick d-flex gap-4">
+                                                        '.$fe_img.$fe_video.'
+                                                    </div>
+                                                </a>
+                                            </div>
+                                        </div>
+                                        <div class="col-12 add-desc-box inst-add-desc-box pl-2">
+                                            <div class="add-details">
+                                                <h5 class="add-title">
+                                                    <a href="'.base_url().'ad/'.$row->postid.'/'.$row->slug.'" class="add-title-link">'.$row->title.'</a>
+                                                </h5>
+                                                <span class="info-row">
+                                                    <span class="add-type business-ads tooltipHere" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="Business Ads">
+                                                        '.$row->breed_name.'
+                                                    </span>
+                                                    <span class="date"><i class="icon-clock"></i> '.timespan(strtotime($row->created_at), time(), 1).' ago</span>
+                                                </span>
+                                                <span class="info-row">
+                                                    <span class="add-type business-ads tooltipHere" data-toggle="tooltip" data-placement="bottom" title="" data-original-title="Business Ads">
+                                                        <i class="icon-location-2"></i> '.$row->address.'
+                                                    </span>
+                                                </span>
+                                                <div class="text-center">
+                                                    <div class="col-12" style="padding: 5px 0px 0px;">
+                                                        '.$gender_badge.'
+                                                    </div>
+                                                </div>
+                                                <div class="text-center">
+                                                    <div class="col-12">
+                                                        <span class="price">$'.$row->asking_price.'</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>';
+                        }
+                    }
+                } else {
+                    // Default message for general searches
+                    $view[] = "<div class='col-12 col-md-12 p-2'><div class='text-center'><br><br><br><br><h2 style='font-size:60px'><i class='fas fa-search'></i></h2><h3><b>Sorry! No Result found.</b></h3></div></div>";
+                }
 			}
 		 
 		$data["products"] = $view;
@@ -971,8 +1065,16 @@ public function sold_ads()
                                                                     ';
                     }
                     
+                    // Gender badge for sold listings
+                    $gender_badge_sold = '';
+                    if(!empty($row->puppy_sex)) {
+                        $gender_color_sold = strtolower($row->puppy_sex) === 'male' ? '#4A90E2' : '#FF69B4';
+                        $gender_text_sold = ucfirst(strtolower($row->puppy_sex));
+                        $gender_badge_sold = '<span class="gender-badge" style="background-color: '.$gender_color_sold.'; color: white; padding: 3px 10px; border-radius: 12px; font-size: 12px; font-weight: bold; display: inline-block; margin-top: 5px;">'.$gender_text_sold.'</span>';
+                    }
+                    
                     $view[] = ' <div class="col-lg-3">
-                    <div class="item-list p-0 mb-3">
+                    <div class="item-list p-0 mb-3" style="border-radius: 10px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
 
                         <div class="row aqr">
                             <div class="col-sm-2 col-12 no-padding photobox">
@@ -992,25 +1094,26 @@ public function sold_ads()
                                              '.$premium_div.'
                                              
                                                 <div class="row" style="width: 100%;">
-                                                    <div class="col-6" style=" padding: 0px;">
-                                                        <h5 class="add-title">
-                                                            <a href="javascript:void(0)">
+                                                    <div class="text-center"><div class="col-12" style=" padding: 10px 0px 0px; width:100%">
+                                                        <h5 class="add-title" style="margin-bottom: 5px;">
+                                                            <a href="javascript:void(0)" style="color: #000; font-weight: bold;">
                                                              '.$row->title.'
                                                             </a>
                                                         </h5>
-                                                    </div>
-                                                    <div class="col-6">
-                                                        <h2 class="item-price pb-0" style=" padding: 0px;display: flex;align-items: center;color:#8cc63f;">
+                                                    </div></div>
+                                                    <div class="text-center"><div class="col-12" style=" padding: 0px;">
+                                                        <span class="item-breed" style="color: #666; font-size: 14px; display: block;">
+                                                            '.$row->breed_name.'
+                                                        </span>
+                                                    </div></div>
+                                                    <div class="text-center"><div class="col-12" style=" padding: 5px 0px 0px;">
+                                                        '.$gender_badge_sold.'
+                                                    </div></div>
+                                                    <div class="text-center">
+                                                    <div class="col-12">
+                                                        <h2 class="item-price pb-0" style=" padding: 10px 0px 0px;align-items: center;color:#8cc63f;">
                                                              $'. $row->asking_price .' </h2>
-                                                    </div>
-                                                    <div class="col-12" style=" padding: 10px 0px 0px;">
-                                                    <span class="item-location">
-                                                            <i class="icon-location-2"></i>&nbsp;
-
-                                                        '.$row->address.'
-
-
-                                                        </span></div>
+                                                    </div></div>
                                                 </div>
 
 

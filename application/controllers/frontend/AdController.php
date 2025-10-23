@@ -1075,6 +1075,9 @@ class AdController extends User_Controller
 		$result_posts[0]['is_timeslot'] = '0';
 		$result_posts[0]['priority'] = '0';
 		$result_posts[0]['premium_type'] = '0';
+		// Reset sold status for new duplicated ad
+		$result_posts[0]['is_sold'] = '0';
+		$result_posts[0]['sold_date'] = NULL;
 
 		$insert_id 		= $this->common_model->create_record($result_posts[0], 'posts');
 
