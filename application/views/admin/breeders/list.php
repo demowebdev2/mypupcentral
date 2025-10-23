@@ -95,8 +95,15 @@
                         </div>
                         <!-- /.card-header -->
                         <div class="card-body">
-                            <br>
-                            <br>
+                            <div class="row mb-3">
+                                <div class="col-md-3">
+                                    <label for="sortOrder">Sort By:</label>
+                                    <select id="sortOrder" class="form-control">
+                                        <option value="recent">Most Recently Added</option>
+                                        <option value="alphabetical">Alphabetical (A-Z)</option>
+                                    </select>
+                                </div>
+                            </div>
                             <div class="table-responsive">
                                 <table class="table table-striped table-bordered table-hover" id="datatable">
                                     <thead>
@@ -136,15 +143,27 @@
     $(document).ready(function() {
 
         var token = "<?= $this->security->get_csrf_hash(); ?>";
+        
+        // Get saved preferences from localStorage
+        var savedLength = localStorage.getItem('breeders_table_length') || 100;
+        var savedSortOrder = localStorage.getItem('breeders_sort_order') || 'recent';
+        
+        // Set the sort dropdown to saved value
+        $('#sortOrder').val(savedSortOrder);
+        
+        // Determine initial order based on saved sort preference
+        var initialOrder = savedSortOrder === 'alphabetical' ? [[2, 'asc']] : [[1, 'desc']];
+        
         var dataTable = $('#datatable').DataTable({
             "responsive": true,
             "processing": true,
             "serverSide": true,
             "aLengthMenu": [
-                [100, 150, 300, 500],
-                [100, 150, 300, 500]
+                [100, 500, 1000],
+                [100, 500, 1000]
             ],
-            "iDisplayLength": 100,
+            "iDisplayLength": parseInt(savedLength),
+            "order": initialOrder,
             "dom": 'Blfrtip',
             "buttons": [
 
@@ -225,11 +244,31 @@
                 }
             },
             "columnDefs": [{
-                "targets": [0, 1, 2],
+                "targets": [0],
                 "orderable": false,
             }, ],
+            "stateSave": false
 
 
+        });
+        
+        // Save page length when changed
+        $('#datatable').on('length.dt', function(e, settings, len) {
+            localStorage.setItem('breeders_table_length', len);
+        });
+        
+        // Handle sort order change
+        $('#sortOrder').on('change', function() {
+            var sortValue = $(this).val();
+            localStorage.setItem('breeders_sort_order', sortValue);
+            
+            if (sortValue === 'alphabetical') {
+                // Sort by Name column (index 2) ascending
+                dataTable.order([2, 'asc']).draw();
+            } else {
+                // Sort by ID column (index 1) descending (most recent)
+                dataTable.order([1, 'desc']).draw();
+            }
         });
 
     });
@@ -389,4 +428,58 @@
             }
         });
     });
+
+    function delete_recordById(url, Msg) {
+        $.confirm({
+            title: 'Delete Breeder Permanently',
+            content: 'It cannot be undone. Are you sure you want to continue?',
+            draggable: true,
+            type: 'red',
+            buttons: {
+                Delete: {
+                    btnClass: 'btn-red',
+                    action: function() {
+                        $.ajax({
+                            url: url,
+                            type: 'POST',
+                            data: {
+                                '<?php echo $this->security->get_csrf_token_name(); ?>': '<?php echo $this->security->get_csrf_hash(); ?>',
+                            },
+                            success: function(response) {
+                                var result = JSON.parse(response);
+                                if (result.status == 'success') {
+                                    $.alert({
+                                        title: 'Success!',
+                                        content: result.msg,
+                                        type: 'green',
+                                        buttons: {
+                                            ok: function() {
+                                                $('#datatable').DataTable().ajax.reload(null, false);
+                                            }
+                                        }
+                                    });
+                                } else {
+                                    $.alert({
+                                        title: 'Error!',
+                                        content: result.msg,
+                                        type: 'red'
+                                    });
+                                }
+                            },
+                            error: function() {
+                                $.alert({
+                                    title: 'Error!',
+                                    content: 'Something went wrong!',
+                                    type: 'red'
+                                });
+                            }
+                        });
+                    }
+                },
+                cancel: function() {
+                    // User cancelled
+                }
+            }
+        });
+    }
 </script>

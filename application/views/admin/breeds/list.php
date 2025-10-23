@@ -166,7 +166,7 @@
    
     });
     $("body").on("click",".delete-btn",function(){
-        if(!confirm("This action will permenantly delete the record")) {
+        if(!confirm("This action will permanently delete the breed and ALL associated puppy ads (including photos and videos). This cannot be undone. Are you sure?")) {
     return false;
   }
   else
@@ -182,12 +182,20 @@
         var json = JSON.parse(data);     
         if(json.msg=='success')
         {
-             toastr.success('Record deleted successfully.');  
-             window.location.href="<?php echo base_url('admin/breeds')?>"       
+            var message = 'Breed deleted successfully.';
+            if(json.deleted_posts > 0) {
+                message += ' ' + json.deleted_posts + ' associated puppy ad(s) were also deleted.';
+            }
+            toastr.success(message);  
+            window.location.href="<?php echo base_url('admin/breeds')?>"       
         }
         else
         {
-        toastr.warning('Record cannot be deleted!!! This breed type puppy is in current ads. Please remove the advertisement first.');
+            var errorMsg = 'Error deleting breed.';
+            if(json.error_message) {
+                errorMsg += ' ' + json.error_message;
+            }
+            toastr.error(errorMsg);
         }
         //$.notify("Status Changed Successfully", "success");
     });

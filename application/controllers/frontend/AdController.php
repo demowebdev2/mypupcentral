@@ -63,18 +63,18 @@ class AdController extends User_Controller
 
 
 		if ($this->input->post('submit')) {
-			$this->form_validation->set_rules('puppy_category', 'Category', 'trim|required|xss_clean');
-			$this->form_validation->set_rules('ad_title', 'Title', 'trim|required|xss_clean');
-			$this->form_validation->set_rules('description', 'Description', 'trim|required|xss_clean');
-			//   $this->form_validation->set_rules('sale_price', 'Price', 'trim|required|xss_clean');
-			$this->form_validation->set_rules('contact_person', 'Contact Person', 'trim|required|xss_clean');
-			// $this->form_validation->set_rules('location', 'Address', 'trim|required|xss_clean');
-			//   $this->form_validation->set_rules('registration', 'Registration Details', 'trim|required|xss_clean');
-			//   $this->form_validation->set_rules('puppy_name', 'Puppy Name', 'trim|required|xss_clean');
-			// $this->form_validation->set_rules('puppy_age', 'Puppy Age', 'trim|required|xss_clean');
-			$this->form_validation->set_rules('puppy_size', 'Page Size', 'trim|required|xss_clean');
-			$this->form_validation->set_rules('puppy_dob', 'Puppy DOB', 'trim|required|xss_clean');
-			$this->form_validation->set_rules('puppy_sex', 'Puppy Sex', 'trim|required|xss_clean');
+		$this->form_validation->set_rules('puppy_category', 'Category', 'trim|required|xss_clean');
+		$this->form_validation->set_rules('ad_title', 'Title', 'trim|required|xss_clean');
+		$this->form_validation->set_rules('description', 'Description', 'trim|required|xss_clean');
+		//   $this->form_validation->set_rules('sale_price', 'Price', 'trim|required|xss_clean');
+		// $this->form_validation->set_rules('contact_person', 'Contact Person', 'trim|required|xss_clean');
+		// $this->form_validation->set_rules('location', 'Address', 'trim|required|xss_clean');
+		//   $this->form_validation->set_rules('registration', 'Registration Details', 'trim|required|xss_clean');
+		//   $this->form_validation->set_rules('puppy_name', 'Puppy Name', 'trim|required|xss_clean');
+		// $this->form_validation->set_rules('puppy_age', 'Puppy Age', 'trim|required|xss_clean');
+		$this->form_validation->set_rules('puppy_size', 'Page Size', 'trim|required|xss_clean');
+		$this->form_validation->set_rules('puppy_dob', 'Puppy DOB', 'trim|required|xss_clean');
+		$this->form_validation->set_rules('puppy_sex', 'Puppy Sex', 'trim|required|xss_clean');
 
 			if ($this->form_validation->run() == FALSE) {
 
@@ -1605,7 +1605,7 @@ class AdController extends User_Controller
 		$this->form_validation->set_rules('puppy_category', 'Category', 'trim|required|xss_clean');
 		$this->form_validation->set_rules('ad_title', 'Title', 'trim|required|xss_clean');
 		$this->form_validation->set_rules('description', 'Description', 'trim|required|xss_clean');
-		$this->form_validation->set_rules('contact_person', 'Contact Person', 'trim|required|xss_clean');
+		// $this->form_validation->set_rules('contact_person', 'Contact Person', 'trim|required|xss_clean');
 		$this->form_validation->set_rules('location', 'Address', 'trim|required|xss_clean');
 		// $this->form_validation->set_rules('puppy_age', 'Puppy Age', 'trim|required|xss_clean');
 		$this->form_validation->set_rules('puppy_size', 'Page Size', 'trim|required|xss_clean');

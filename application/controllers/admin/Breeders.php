@@ -127,7 +127,9 @@ class Breeders extends Admin_Controller
 
 			$sub_array[] = '<center>
 		
-			<a class="btn btn-default btn-xs" title="View Details" href="' . base_url() . 'admin/breeders/view/' . $row->id . '" ><i class="fas fa-eye m-1"></i></a>';
+			<a class="btn btn-default btn-xs" title="View Details" href="' . base_url() . 'admin/breeders/view/' . $row->id . '" ><i class="fas fa-eye m-1"></i></a> &nbsp;&nbsp;
+			<a class="btn btn-danger btn-xs" title="Delete" href="javascript:void(0)" onclick="delete_recordById(\'' . base_url() . 'admin/Breeders/delete_breeder/' . $row->id . '\',\'Delete\')" ><i class="fas fa-trash m-1"></i></a>
+			</center>';
 
 
 			$data[] = $sub_array;
@@ -332,25 +334,75 @@ class Breeders extends Admin_Controller
 	
 	public function delete_breeder($id)
 	{
-	    $user=$this->common_model->list_row('user_accounts',array('id'=>$id));
-	    if(!empty($user->photo))
-	    {
-	        unlink("uploads/doc/".$user->photo);
-	    }
-	    if(!empty($user->kennel_images))
-	    {
-	        $imgs=explode(",",$user->kennel_images);
-	        foreach($imgs as $row)
-	        {
-	             unlink("uploads/kennel/".$row);
-	        }
-	       
+	    // Verify breeder exists
+	    $user = $this->common_model->list_row('user_accounts', array('id' => $id));
+	    if (!$user) {
+	        $resp = array('status' => 'error', 'msg' => 'Breeder not found');
+	        echo json_encode($resp);
+	        return;
 	    }
 	    
-	    $this->common_model->delete('user_accounts',array('id'=>$id));
-	   	$resp=array('status'=>'success','msg'=>'Removed');
-    
-    
-    	echo json_encode($resp);
+	    try {
+	        // Delete breeder profile photo
+	        if (!empty($user->photo) && file_exists("uploads/doc/" . $user->photo)) {
+	            @unlink("uploads/doc/" . $user->photo);
+	        }
+	        
+	        // Delete kennel images
+	        if (!empty($user->kennel_images)) {
+	            $imgs = explode(",", $user->kennel_images);
+	            foreach ($imgs as $row) {
+	                if (!empty($row) && file_exists("uploads/kennel/" . $row)) {
+	                    @unlink("uploads/kennel/" . $row);
+	                }
+	            }
+	        }
+	        
+	        // Get all posts (puppy listings) by this breeder
+	        $posts = $this->common_model->list_records(array('user_id' => $id), 'posts', 'id', 'DESC', 10000);
+	        if (!empty($posts)) {
+	            foreach ($posts as $post) {
+	                // Delete booking time slots for this post
+	                $this->common_model->delete('book_time_slot', array('ad_id' => $post->id));
+	                
+	                // Delete post pictures
+	                $pictures = $this->common_model->list_records(array('post_id' => $post->id), 'posts_pictures', 'id', 'DESC', 10000);
+	                if (!empty($pictures)) {
+	                    foreach ($pictures as $pic) {
+	                        if (!empty($pic->picture_name) && file_exists("uploads/puppies/" . $pic->picture_name)) {
+	                            @unlink("uploads/puppies/" . $pic->picture_name);
+	                        }
+	                    }
+	                    $this->common_model->delete('posts_pictures', array('post_id' => $post->id));
+	                }
+	                
+	                // Delete post videos
+	                $videos = $this->common_model->list_records(array('post_id' => $post->id), 'posts_videos', 'id', 'DESC', 10000);
+	                if (!empty($videos)) {
+	                    foreach ($videos as $vid) {
+	                        if (!empty($vid->video_name) && file_exists("uploads/puppies/" . $vid->video_name)) {
+	                            @unlink("uploads/puppies/" . $vid->video_name);
+	                        }
+	                    }
+	                    $this->common_model->delete('posts_videos', array('post_id' => $post->id));
+	                }
+	            }
+	            
+	            // Delete all posts by this breeder
+	            $this->common_model->delete('posts', array('user_id' => $id));
+	        }
+	        
+	        // Delete contact persons associated with this breeder
+	        $this->common_model->delete('contact_person', array('user_account_id' => $id));
+	        
+	        // Delete the breeder account
+	        $this->common_model->delete('user_accounts', array('id' => $id));
+	        
+	        $resp = array('status' => 'success', 'msg' => 'Breeder account and all associated data deleted successfully');
+	    } catch (Exception $e) {
+	        $resp = array('status' => 'error', 'msg' => 'Error deleting breeder: ' . $e->getMessage());
+	    }
+	    
+	    echo json_encode($resp);
 	}
 }

@@ -353,29 +353,60 @@ public function delete()
 {
 	$id = $this->input->post('id');
 
-	
-	 $result = $this->db->select('*')
-                        ->from('posts')
-                        ->where('category_id', $id)
-                        ->get()
-                        ->num_rows();
-
-                    if ($result == 0) {
-                    	$this->db->set(['is_puppyverify'=>0])->where(['id'=>$id])->update('breeds');
-                       //$this->common_model->delete('breeds',['id'=>$id]);
-                       $json=array(
-                       	'msg'=>'success'
-                       );
-                       echo json_encode($json);return true;
-                    } 
-                    else
-                    {
-                    	$json=array(
-                       	'msg'=>'error'
-                       );
-                       echo json_encode($json);return true;
-                    }
-	
+	try {
+		// Get all posts (puppy ads) with this breed
+		$posts = $this->common_model->list_records(array('category_id' => $id), 'posts', 'id', 'DESC', 10000);
+		
+		if (!empty($posts)) {
+			foreach ($posts as $post) {
+				// Delete booking time slots for this post
+				$this->common_model->delete('book_time_slot', array('ad_id' => $post->id));
+				
+				// Delete post pictures
+				$pictures = $this->common_model->list_records(array('post_id' => $post->id), 'posts_pictures', 'id', 'DESC', 10000);
+				if (!empty($pictures)) {
+					foreach ($pictures as $pic) {
+						if (!empty($pic->picture_name) && file_exists("uploads/puppies/" . $pic->picture_name)) {
+							@unlink("uploads/puppies/" . $pic->picture_name);
+						}
+					}
+					$this->common_model->delete('posts_pictures', array('post_id' => $post->id));
+				}
+				
+				// Delete post videos
+				$videos = $this->common_model->list_records(array('post_id' => $post->id), 'posts_videos', 'id', 'DESC', 10000);
+				if (!empty($videos)) {
+					foreach ($videos as $vid) {
+						if (!empty($vid->video_name) && file_exists("uploads/puppies/" . $vid->video_name)) {
+							@unlink("uploads/puppies/" . $vid->video_name);
+						}
+					}
+					$this->common_model->delete('posts_videos', array('post_id' => $post->id));
+				}
+			}
+			
+			// Delete all posts with this breed
+			$this->common_model->delete('posts', array('category_id' => $id));
+		}
+		
+		// Mark breed as deleted (set is_puppyverify to 0)
+		$this->db->set(['is_puppyverify'=>0])->where(['id'=>$id])->update('breeds');
+		
+		$json=array(
+			'msg'=>'success',
+			'deleted_posts' => count($posts)
+		);
+		echo json_encode($json);
+		return true;
+		
+	} catch (Exception $e) {
+		$json=array(
+			'msg'=>'error',
+			'error_message' => $e->getMessage()
+		);
+		echo json_encode($json);
+		return false;
+	}
 
 }
 public function deleteImage()
